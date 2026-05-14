@@ -2451,7 +2451,7 @@ function DualAxisChart({ hist, L }) {
 }
 
 // ── SCHEMATIC ────────────────────────────────────────────────────────────
-function SchematicScreen({ s, set, L, onPick }) {
+function SchematicScreen({ s, set, L, lang, onPick }) {
   const isKorea = s.version === 'korea';
   const flow    = s.compressorOn || s.heaterOn;
   const heat    = s.heaterOn || s.fourWayValve === 'heat';
@@ -2477,14 +2477,14 @@ function SchematicScreen({ s, set, L, onPick }) {
 
       {/* ── Right: operation + outdoor status + accessories ── */}
       <div style={{ minHeight: 0 }}>
-        <SchematicControlPanel s={s} set={set} L={L} isKorea={isKorea} sections={['control', 'status', 'accessories']} statusLayout="horizontal" compact />
+        <SchematicControlPanel s={s} set={set} L={L} lang={lang} isKorea={isKorea} sections={['control', 'status', 'accessories']} statusLayout="horizontal" compact />
       </div>
     </div>
   );
 }
 
 // ── SCHEMATIC CONTROL PANEL (right side) ─────────────────────────────────
-function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'status', 'accessories'], layout = 'vertical', statusLayout = 'vertical', compact = false }) {
+function SchematicControlPanel({ s, set, L, lang = 'ko', isKorea, sections = ['control', 'status', 'accessories'], layout = 'vertical', statusLayout = 'vertical', compact = false }) {
   const compRun = s.compressorOn;
   const T_disc  = compRun ? `${(s.outdoorTemp + 30).toFixed(0)}°C` : '—';
   const T_cond  = compRun ? `${(s.outdoorTemp + 14).toFixed(0)}°C` : '—';
@@ -2494,6 +2494,31 @@ function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'sta
   const exvPct  = compRun ? `${(s.exvOpenPct ?? 35).toFixed(0)}%` : '—';
   const sh      = compRun ? `${(s.superheat ?? 5.5).toFixed(1)}°C` : '—';
   const sc      = compRun ? `${(s.subcooling ?? 3.0).toFixed(1)}°C` : '—';
+
+  const ko = lang === 'ko';
+  const lbl = {
+    ctrlTitle:   ko ? '운전 제어'    : 'Operation Control',
+    ctrlSub:     ko ? 'Operation Control' : 'Mode · Setpoint · Fan',
+    mode:        ko ? '모드'         : 'Mode',
+    setpoint:    ko ? '설정 온도'    : 'Setpoint',
+    fanSpeed:    ko ? '팬 속도'      : 'Fan Speed',
+    outdoorTitle:ko ? '실외기 상태'  : 'Outdoor Unit',
+    outdoorSub:  ko ? 'Outdoor Unit — live' : 'Live Status',
+    comp:        ko ? '압축기'       : 'Compressor',
+    cond:        ko ? '응축기'       : 'Condenser',
+    disc:        ko ? '토출 온도'    : 'Discharge T.',
+    suct:        ko ? '흡입 온도'    : 'Suction T.',
+    loPres:      ko ? '저압'         : 'Low Press.',
+    exv:         ko ? 'EXV 개도'     : 'EXV Opening',
+    superheat:   ko ? '과열도'       : 'Superheat',
+    subcool:     ko ? '과냉각도'     : 'Subcooling',
+    evap:        ko ? '증발 온도'    : 'Evap. Temp.',
+    accTitle:    ko ? '부속 장치'    : 'Accessories',
+    accSub:      'Accessories Control',
+    rhTarget:    ko ? `RH 목표 ${s.targetRH}%`   : `RH Target ${s.targetRH}%`,
+    co2Limit:    ko ? `CO₂ 한계 ${s.targetCO2} ppm` : `CO₂ Limit ${s.targetCO2} ppm`,
+    vent:        ko ? '환기'         : 'Ventilation',
+  };
 
   const SecHead = ({ title, sub, color }) => (
     <div style={{ borderLeft: `4px solid ${color}`, paddingLeft: 10, marginBottom: 12 }}>
@@ -2531,11 +2556,11 @@ function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'sta
 
       {sections.includes('control') && (
       <div className="card" style={{ padding: compact ? '8px 8px 7px' : '9px 9px 8px' }}>
-        <SecHead title="운전 제어" sub="Operation Control" color="#6B5BD2" />
+        <SecHead title={lbl.ctrlTitle} sub={lbl.ctrlSub} color="#6B5BD2" />
 
         {/* Mode */}
         <div style={{ marginBottom: 10 }}>
-          <div style={{ fontSize: 10.5, color: 'var(--ink-4)', fontWeight: 600, letterSpacing: '.04em', marginBottom: 6, textTransform: 'uppercase' }}>모드</div>
+          <div style={{ fontSize: 10.5, color: 'var(--ink-4)', fontWeight: 600, letterSpacing: '.04em', marginBottom: 6, textTransform: 'uppercase' }}>{lbl.mode}</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 4 }}>
             {['cool','heat','auto','dry','fan','off'].filter(m => !(!isKorea && m === 'heat')).map(m => {
               const col = { cool:'#2A6FDB', heat:'#D97757', auto:'#1F8A5B', dry:'#6B5BD2', fan:'#9C7B14', off:'#8A93A4' }[m];
@@ -2555,7 +2580,7 @@ function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'sta
 
         {/* Setpoint */}
         <div style={{ marginBottom: 10 }}>
-          <div style={{ fontSize: 10.5, color: 'var(--ink-4)', fontWeight: 600, letterSpacing: '.04em', marginBottom: 6, textTransform: 'uppercase' }}>설정 온도 Setpoint</div>
+          <div style={{ fontSize: 10.5, color: 'var(--ink-4)', fontWeight: 600, letterSpacing: '.04em', marginBottom: 6, textTransform: 'uppercase' }}>{lbl.setpoint}</div>
           <div style={{ display: 'grid', gridTemplateColumns: '36px 1fr 36px', gap: 8, alignItems: 'center' }}>
             <button className="btn" style={{ height: 32, padding: 0, justifyContent: 'center', borderRadius: 9 }}
                     onClick={() => set({ targetTemp: Math.max(16, s.targetTemp - 1) })}>
@@ -2580,7 +2605,7 @@ function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'sta
         {/* Fan speed */}
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-            <div style={{ fontSize: 10.5, color: 'var(--ink-4)', fontWeight: 600, letterSpacing: '.04em', textTransform: 'uppercase' }}>팬 속도 Fan Speed</div>
+            <div style={{ fontSize: 10.5, color: 'var(--ink-4)', fontWeight: 600, letterSpacing: '.04em', textTransform: 'uppercase' }}>{lbl.fanSpeed}</div>
             <div style={{ fontFamily: 'JetBrains Mono', fontWeight: 700, fontSize: 13, color: '#9C7B14' }}>
               L{s.fanSpeed} · {(s.fanSpeed * 280).toFixed(0)} CMM
             </div>
@@ -2594,7 +2619,7 @@ function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'sta
 
       {sections.includes('status') && (
       <div className="card" style={{ padding: compact ? '8px 8px 7px' : '9px 9px 8px' }}>
-        <SecHead title="실외기 상태" sub="Outdoor Unit — live" color="#D97757" />
+        <SecHead title={lbl.outdoorTitle} sub={lbl.outdoorSub} color="#D97757" />
 
         <div style={{ display: 'grid', gridTemplateColumns: statusHorizontal ? '1fr 1fr' : '1fr 1fr', gap: 8, marginBottom: 8 }}>
           <div style={{
@@ -2602,7 +2627,7 @@ function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'sta
             borderRadius: 10, padding: statusHorizontal ? '8px 9px' : '10px 12px',
             border: `1.5px solid ${compRun ? '#2A6FDB40' : 'var(--line-soft)'}`,
           }}>
-            <div style={{ fontSize: 9.5, color: 'var(--ink-4)', fontWeight: 700, letterSpacing: '.05em', textTransform: 'uppercase', marginBottom: 4 }}>압축기 Comp.</div>
+            <div style={{ fontSize: 9.5, color: 'var(--ink-4)', fontWeight: 700, letterSpacing: '.05em', textTransform: 'uppercase', marginBottom: 4 }}>{lbl.comp}</div>
             <div style={{ fontFamily: 'JetBrains Mono', fontWeight: 800, fontSize: 19, color: compRun ? '#2A6FDB' : '#B8C0CC', lineHeight: 1 }}>
               {s.compFreqHz.toFixed(0)}<span style={{ fontSize: 11, fontWeight: 400, marginLeft: 2 }}>Hz</span>
             </div>
@@ -2613,7 +2638,7 @@ function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'sta
             borderRadius: 10, padding: statusHorizontal ? '8px 9px' : '10px 12px',
             border: `1.5px solid ${compRun ? '#D9775740' : 'var(--line-soft)'}`,
           }}>
-            <div style={{ fontSize: 9.5, color: 'var(--ink-4)', fontWeight: 700, letterSpacing: '.05em', textTransform: 'uppercase', marginBottom: 4 }}>응축기 Cond.</div>
+            <div style={{ fontSize: 9.5, color: 'var(--ink-4)', fontWeight: 700, letterSpacing: '.05em', textTransform: 'uppercase', marginBottom: 4 }}>{lbl.cond}</div>
             <div style={{ fontFamily: 'JetBrains Mono', fontWeight: 800, fontSize: 19, color: compRun ? '#D97757' : '#B8C0CC', lineHeight: 1 }}>
               {T_cond}
             </div>
@@ -2624,26 +2649,26 @@ function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'sta
         {statusHorizontal ? (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: 10 }}>
             <div>
-              <LiveRow label="토출 온도 T_disc" value={T_disc} color={compRun ? '#D97757' : 'var(--ink-4)'} />
-              <LiveRow label="흡입 온도 T_suct" value={compRun ? `${(s.indoorTemp - 5).toFixed(1)}°C` : '—'} color={compRun ? '#2A6FDB' : 'var(--ink-4)'} />
-              <LiveRow label="저압 P_lo" value={P_lo} color={compRun ? '#2A6FDB' : 'var(--ink-4)'} />
+              <LiveRow label={lbl.disc}     value={T_disc} color={compRun ? '#D97757' : 'var(--ink-4)'} />
+              <LiveRow label={lbl.suct}     value={compRun ? `${(s.indoorTemp - 5).toFixed(1)}°C` : '—'} color={compRun ? '#2A6FDB' : 'var(--ink-4)'} />
+              <LiveRow label={lbl.loPres}   value={P_lo}   color={compRun ? '#2A6FDB' : 'var(--ink-4)'} />
             </div>
             <div>
-              <LiveRow label="EXV 개도" value={exvPct} color={compRun ? '#9C7B14' : 'var(--ink-4)'} />
-              <LiveRow label="과열도 SH" value={sh} color={compRun ? '#6B5BD2' : 'var(--ink-4)'} />
-              <LiveRow label="과냉각도 SC" value={sc} color={compRun ? '#6B5BD2' : 'var(--ink-4)'} />
-              <LiveRow label="증발 온도 T_evap" value={T_evap} color={compRun ? '#2A6FDB' : 'var(--ink-4)'} />
+              <LiveRow label={lbl.exv}      value={exvPct} color={compRun ? '#9C7B14' : 'var(--ink-4)'} />
+              <LiveRow label={lbl.superheat} value={sh}    color={compRun ? '#6B5BD2' : 'var(--ink-4)'} />
+              <LiveRow label={lbl.subcool}  value={sc}     color={compRun ? '#6B5BD2' : 'var(--ink-4)'} />
+              <LiveRow label={lbl.evap}     value={T_evap} color={compRun ? '#2A6FDB' : 'var(--ink-4)'} />
             </div>
           </div>
         ) : (
           <>
-            <LiveRow label="토출 온도 T_disc"    value={T_disc} color={compRun ? '#D97757' : 'var(--ink-4)'} />
-            <LiveRow label="흡입 온도 T_suct"    value={compRun ? `${(s.indoorTemp - 5).toFixed(1)}°C` : '—'} color={compRun ? '#2A6FDB' : 'var(--ink-4)'} />
-            <LiveRow label="저압 P_lo"           value={P_lo}   color={compRun ? '#2A6FDB' : 'var(--ink-4)'} />
-            <LiveRow label="EXV 개도"            value={exvPct} color={compRun ? '#9C7B14' : 'var(--ink-4)'} />
-            <LiveRow label="과열도 SH"           value={sh}     color={compRun ? '#6B5BD2' : 'var(--ink-4)'} />
-            <LiveRow label="과냉각도 SC"         value={sc}     color={compRun ? '#6B5BD2' : 'var(--ink-4)'} />
-            <LiveRow label="증발 온도 T_evap"    value={T_evap} color={compRun ? '#2A6FDB' : 'var(--ink-4)'} />
+            <LiveRow label={lbl.disc}      value={T_disc} color={compRun ? '#D97757' : 'var(--ink-4)'} />
+            <LiveRow label={lbl.suct}      value={compRun ? `${(s.indoorTemp - 5).toFixed(1)}°C` : '—'} color={compRun ? '#2A6FDB' : 'var(--ink-4)'} />
+            <LiveRow label={lbl.loPres}    value={P_lo}   color={compRun ? '#2A6FDB' : 'var(--ink-4)'} />
+            <LiveRow label={lbl.exv}       value={exvPct} color={compRun ? '#9C7B14' : 'var(--ink-4)'} />
+            <LiveRow label={lbl.superheat} value={sh}     color={compRun ? '#6B5BD2' : 'var(--ink-4)'} />
+            <LiveRow label={lbl.subcool}   value={sc}     color={compRun ? '#6B5BD2' : 'var(--ink-4)'} />
+            <LiveRow label={lbl.evap}      value={T_evap} color={compRun ? '#2A6FDB' : 'var(--ink-4)'} />
           </>
         )}
       </div>
@@ -2651,7 +2676,7 @@ function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'sta
 
       {sections.includes('accessories') && (
       <div className="card" style={{ padding: accessoriesHorizontal ? (compact ? '6px 8px' : '8px 10px') : (compact ? '8px 8px 7px' : '9px 9px 8px') }}>
-        <SecHead title="부속 장치" sub="Accessories Control" color="#1F8A5B" />
+        <SecHead title={lbl.accTitle} sub={lbl.accSub} color="#1F8A5B" />
 
         {accessoriesHorizontal ? (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: compact ? 8 : 10, alignItems: 'start' }}>
@@ -2730,7 +2755,7 @@ function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'sta
                 <Toggle on={s.humidifierOn} onChange={v => set({ humidifierOn: v })} />
               </div>
               {s.humidifierOn && s.power && (
-                <SliderRow label={`RH 목표 ${s.targetRH}%`} unit="%" min={30} max={70} step={5}
+                <SliderRow label={lbl.rhTarget} unit="%" min={30} max={70} step={5}
                            value={s.targetRH} onChange={v => set({ targetRH: v })} />
               )}
             </div>
@@ -2764,13 +2789,13 @@ function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'sta
                     <Icon name="fan" size={compact ? 12 : 14} />
                   </div>
                   <span style={{ fontSize: compact ? 10.5 : 12, fontWeight: 700, color: s.ventilationOn && s.power ? '#D97757' : 'var(--ink-3)' }}>
-                    환기 Ventilation · {Math.round(s.co2)} ppm
+                    {lbl.vent} · {Math.round(s.co2)} ppm
                   </span>
                 </div>
                 <Toggle on={s.ventilationOn} onChange={v => set({ ventilationOn: v })} />
               </div>
               {s.ventilationOn && s.power && (
-                <SliderRow label={`CO₂ 한계 ${s.targetCO2} ppm`} unit="ppm" min={600} max={1500} step={50}
+                <SliderRow label={lbl.co2Limit} unit="ppm" min={600} max={1500} step={50}
                            value={s.targetCO2} onChange={v => set({ targetCO2: v })} />
               )}
             </div>
@@ -4924,7 +4949,7 @@ function App() {
   const renderScreen = () => {
     switch (view) {
       case 'dashboard':  return <DashboardScreen s={state} set={update} L={L} />;
-      case 'schematic':  return <SchematicScreen s={state} set={update} L={L} onPick={setOverlayComp} />;
+      case 'schematic':  return <SchematicScreen s={state} set={update} L={L} lang={settings.lang} onPick={setOverlayComp} />;
       case 'mode':       return <ModeScreen      s={state} set={update} L={L} />;
       case 'curriculum':
         if (lessonN) {

@@ -77,7 +77,7 @@ function App() {
   const renderScreen = () => {
     switch (view) {
       case 'dashboard':  return <DashboardScreen s={state} set={update} L={L} />;
-      case 'schematic':  return <SchematicScreen s={state} set={update} L={L} onPick={setOverlayComp} />;
+      case 'schematic':  return <SchematicScreen s={state} set={update} L={L} lang={settings.lang} onPick={setOverlayComp} />;
       case 'mode':       return <ModeScreen      s={state} set={update} L={L} />;
       case 'curriculum':
         if (lessonN) {
