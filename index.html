@@ -2038,7 +2038,7 @@ function SchematicScreen({ s, set, L, onPick }) {
   const flow    = s.compressorOn || s.heaterOn;
   const heat    = s.heaterOn || s.fourWayValve === 'heat';
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 268px', gap: 8, height: '100%', overflow: 'hidden' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 268px', gridTemplateRows: 'minmax(0, 1fr) auto', gap: 8, height: '100%', overflow: 'hidden' }}>
       {/* ── SVG schematic ── */}
       <div className="card" style={{ padding: 0, overflow: 'visible', display: 'grid', gridTemplateRows: 'auto minmax(0, 1fr)', minHeight: 0 }}>
         <div className="card-h" style={{ padding: '6px 10px 0' }}>
@@ -2058,8 +2058,12 @@ function SchematicScreen({ s, set, L, onPick }) {
       </div>
 
       {/* ── Right: operation + accessories + outdoor status ── */}
-      <div style={{ minHeight: 0 }}>
-        <SchematicControlPanel s={s} set={set} L={L} isKorea={isKorea} sections={['control', 'accessories', 'status']} statusLayout="horizontal" />
+      <div style={{ gridColumn: '2', gridRow: '1', minHeight: 0 }}>
+        <SchematicControlPanel s={s} set={set} L={L} isKorea={isKorea} sections={['control', 'status']} statusLayout="horizontal" />
+      </div>
+
+      <div style={{ gridColumn: '1', gridRow: '2', minHeight: 0 }}>
+        <SchematicControlPanel s={s} set={set} L={L} isKorea={isKorea} sections={['accessories']} layout="horizontal" />
       </div>
     </div>
   );
