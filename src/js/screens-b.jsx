@@ -184,8 +184,8 @@ function EnergyScreen({ s, L }) {
   const week = Array.from({ length: 7 }, (_, i) => 14 + Math.sin(i / 2) * 3 + (i === 6 ? -2 : 0));
 
   return (
-    <div style={{ display: 'grid', gridTemplateRows: '98px minmax(0, 1fr) minmax(0, 1fr)', gap: 8, height: '100%', overflow: 'hidden' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 9 }}>
+    <div style={{ display: 'grid', gridTemplateRows: '88px minmax(0, 1fr) minmax(0, 1fr)', gap: 6, height: '100%', overflow: 'hidden' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 7 }}>
         <StatCard compact tone="lilac" icon="bolt" label="Today (kWh)" value={total24.toFixed(1)} unit="kWh"
                   foot={`vs yesterday`} trend={{ dir: 'down', label: '−6%' }} />
         <StatCard compact tone="peach" icon="bolt" label="Today (cost)" value={`₩${(cost / 1000).toFixed(1)}k`} unit=""
@@ -196,7 +196,7 @@ function EnergyScreen({ s, L }) {
                   foot="vs baseline (eco mode)" trend={{ dir: 'up', label: '+12%' }} />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1.6fr 1fr', gap: 10, minHeight: 0 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1.6fr 1fr', gap: 8, minHeight: 0 }}>
         <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0 }}>
           <div className="card-h">
             <div className="title">{L('l_24h')} · Hourly Consumption</div>
@@ -204,10 +204,10 @@ function EnergyScreen({ s, L }) {
           </div>
           <HourlyBars hours={hours} />
         </div>
-        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto auto 1fr', minHeight: 0, padding: 12 }}>
+        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto auto 1fr', minHeight: 0, padding: 10 }}>
           <div className="card-h"><div className="title">Energy Breakdown</div></div>
-          <StackedBar segments={breakdown} height={18} />
-          <div style={{ display: 'grid', gap: 7, marginTop: 10, alignContent: 'start', overflow: 'auto' }}>
+          <StackedBar segments={breakdown} height={14} />
+          <div style={{ display: 'grid', gap: 5, marginTop: 8, alignContent: 'start', overflow: 'auto' }}>
             {breakdown.map(b => (
               <div key={b.label} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12 }}>
                 <span style={{ width: 9, height: 9, borderRadius: 3, background: b.color }}></span>
@@ -223,14 +223,14 @@ function EnergyScreen({ s, L }) {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, minHeight: 0 }}>
-        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, padding: 12 }}>
+        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, padding: 10 }}>
           <div className="card-h">
             <div className="title">{L('l_7d')}</div>
             <span style={{ fontSize: 11, color: 'var(--ink-4)', fontFamily: 'JetBrains Mono' }}>Σ {week.reduce((a, b) => a + b, 0).toFixed(0)} kWh</span>
           </div>
           <WeeklyBars data={week} />
         </div>
-        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, padding: 12 }}>
+        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, padding: 10 }}>
           <div className="card-h"><div className="title">Tariff / Demand</div></div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 8, alignContent: 'start', overflow: 'auto' }}>
             <MiniMetric label="Peak Today" value="3.4" unit="kW" tone="peach" />
