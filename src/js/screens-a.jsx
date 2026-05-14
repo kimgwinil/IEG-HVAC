@@ -182,31 +182,32 @@ function SchematicScreen({ s, set, L, onPick }) {
   const flow    = s.compressorOn || s.heaterOn;
   const heat    = s.heaterOn || s.fourWayValve === 'heat';
   return (
-    <div style={{ display: 'grid', gridTemplateRows: 'minmax(0, 1fr) auto', gap: 8, height: '100%', overflow: 'hidden' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 244px', gap: 8, minHeight: 0 }}>
-        {/* ── SVG schematic ── */}
-        <div className="card" style={{ padding: 0, overflow: 'visible', display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0 }}>
-          <div className="card-h" style={{ padding: '6px 10px 0' }}>
-            <div>
-              <div className="title">{L('nav_schematic')} — {isKorea ? 'KOREA' : 'MALAYSIA'} · {L('mode_' + s.mode).toUpperCase()}</div>
-              <div style={{ fontSize: 10, color: 'var(--ink-4)', marginTop: 2 }}>Click any component to view its principle</div>
-            </div>
-            <div style={{ display: 'flex', gap: 6, fontSize: 9.5 }}>
-              <Legend dot="#D97757" label="Hot gas / High-P" />
-              <Legend dot="#2A6FDB" label="Liquid / Low-P" />
-              <Legend dot="#1F8A5B" label="Air flow" />
-            </div>
+    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 244px', gridTemplateRows: 'minmax(0, 1fr) auto', gap: 8, height: '100%', overflow: 'hidden' }}>
+      {/* ── SVG schematic ── */}
+      <div className="card" style={{ gridColumn: '1', gridRow: '1', padding: 0, overflow: 'visible', display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0 }}>
+        <div className="card-h" style={{ padding: '6px 10px 0' }}>
+          <div>
+            <div className="title">{L('nav_schematic')} — {isKorea ? 'KOREA' : 'MALAYSIA'} · {L('mode_' + s.mode).toUpperCase()}</div>
+            <div style={{ fontSize: 10, color: 'var(--ink-4)', marginTop: 2 }}>Click any component to view its principle</div>
           </div>
-          <div style={{ padding: '0 6px 6px', minHeight: 0 }}>
-            <SchematicSVG s={s} isKorea={isKorea} flow={flow} heat={heat} L={L} onPick={onPick} />
+          <div style={{ display: 'flex', gap: 6, fontSize: 9.5 }}>
+            <Legend dot="#D97757" label="Hot gas / High-P" />
+            <Legend dot="#2A6FDB" label="Liquid / Low-P" />
+            <Legend dot="#1F8A5B" label="Air flow" />
           </div>
         </div>
+        <div style={{ padding: '0 6px 6px', minHeight: 0 }}>
+          <SchematicSVG s={s} isKorea={isKorea} flow={flow} heat={heat} L={L} onPick={onPick} />
+        </div>
+      </div>
 
-        {/* ── Right: operation panel only ── */}
+      {/* ── Right: operation panel only ── */}
+      <div style={{ gridColumn: '2', gridRow: '1', minHeight: 0 }}>
         <SchematicControlPanel s={s} set={set} L={L} isKorea={isKorea} sections={['control']} />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+      {/* ── Below schematic flow (left column only) ── */}
+      <div style={{ gridColumn: '1', gridRow: '2', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
         <SchematicControlPanel s={s} set={set} L={L} isKorea={isKorea} sections={['status']} />
         <SchematicControlPanel s={s} set={set} L={L} isKorea={isKorea} sections={['accessories']} />
       </div>
