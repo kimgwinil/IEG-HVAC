@@ -10,18 +10,18 @@ function DashboardScreen({ s, set, L }) {
   const pd  = (arr) => off ? [] : last(arr);
 
   return (
-    <div style={{ display: 'grid', gridTemplateRows: 'auto auto 1fr', gap: 12, height: '100%' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 10 }}>
-        <StatCard tone="sky"   icon="thermo"  label={L('m_indoorTemp')}  value={pv(() => s.indoorTemp.toFixed(1))}  unit="°C"  sparkData={pd(s.hist.indoorTemp)}  sparkColor="#2A6FDB" foot={`${L('m_target')} ${s.targetTemp}°C`} />
-        <StatCard tone="mint"  icon="drop"    label={L('m_indoorRH')}    value={pv(() => s.indoorRH.toFixed(1))}    unit="%"   sparkData={pd(s.hist.indoorRH)}    sparkColor="#1F8A5B" />
-        <StatCard tone="peach" icon="co2"     label={L('m_co2')}         value={pv(() => String(Math.round(s.co2)))} unit="ppm" sparkData={pd(s.hist.co2)}        sparkColor="#D97757" />
-        <StatCard tone="lilac" icon="bolt"    label={L('m_power')}       value={pv(() => s.powerKW.toFixed(2))}     unit="kW"  sparkData={pd(s.hist.powerKW)}     sparkColor="#6B5BD2" />
-        <StatCard tone="lemon" icon="eq"      label={L('m_eer')}         value={pv(() => s.eer.toFixed(2))}         unit=""    sparkData={pd(s.hist.eer)}         sparkColor="#9C7B14" />
-        <StatCard tone="rose"  icon="sun"     label={L('m_outdoorTemp')} value={pv(() => s.outdoorTemp.toFixed(1))} unit="°C"  sparkData={pd(s.hist.outdoorTemp)} sparkColor="#C0364E" />
+    <div style={{ display: 'grid', gridTemplateRows: '106px 196px minmax(0, 1fr)', gap: 10, height: '100%', overflow: 'hidden' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, minmax(0, 1fr))', gap: 9 }}>
+        <StatCard compact tone="sky"   icon="thermo"  label={L('m_indoorTemp')}  value={pv(() => s.indoorTemp.toFixed(1))}  unit="°C"  sparkData={pd(s.hist.indoorTemp)}  sparkColor="#2A6FDB" foot={`${L('m_target')} ${s.targetTemp}°C`} />
+        <StatCard compact tone="mint"  icon="drop"    label={L('m_indoorRH')}    value={pv(() => s.indoorRH.toFixed(1))}    unit="%"   sparkData={pd(s.hist.indoorRH)}    sparkColor="#1F8A5B" />
+        <StatCard compact tone="peach" icon="co2"     label={L('m_co2')}         value={pv(() => String(Math.round(s.co2)))} unit="ppm" sparkData={pd(s.hist.co2)}        sparkColor="#D97757" />
+        <StatCard compact tone="lilac" icon="bolt"    label={L('m_power')}       value={pv(() => s.powerKW.toFixed(2))}     unit="kW"  sparkData={pd(s.hist.powerKW)}     sparkColor="#6B5BD2" />
+        <StatCard compact tone="lemon" icon="eq"      label={L('m_eer')}         value={pv(() => s.eer.toFixed(2))}         unit=""    sparkData={pd(s.hist.eer)}         sparkColor="#9C7B14" />
+        <StatCard compact tone="rose"  icon="sun"     label={L('m_outdoorTemp')} value={pv(() => s.outdoorTemp.toFixed(1))} unit="°C"  sparkData={pd(s.hist.outdoorTemp)} sparkColor="#C0364E" />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr', gap: 10 }}>
-        <div className="card">
+      <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr', gap: 10, minHeight: 0 }}>
+        <div className="card" style={{ padding: 12 }}>
           <div className="card-h">
             <div className="title">{L('l_quickctl')}</div>
             <div className="seg" style={{ fontSize: 11 }}>
@@ -30,7 +30,7 @@ function DashboardScreen({ s, set, L }) {
               ))}
             </div>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 6 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 4 }}>
             <div style={{ display: 'grid', gap: 8 }}>
               <SliderRow label={L('a_setpoint')} unit="°C" min={16} max={30} color={s.mode === 'heat' ? 'warm' : 'cool'} value={s.targetTemp} onChange={(v) => set({ targetTemp: v })} />
               <SliderRow label={L('a_fan')} unit="/5" min={0} max={5} value={s.fanSpeed} onChange={(v) => set({ fanSpeed: v })} />
@@ -40,37 +40,37 @@ function DashboardScreen({ s, set, L }) {
               <SliderRow label={L('a_targetCO2')} unit="ppm" min={600} max={1500} step={50} value={s.targetCO2} onChange={(v) => set({ targetCO2: v })} />
             </div>
           </div>
-          <div style={{ marginTop: 10, display: 'flex', gap: 14, flexWrap: 'wrap' }}>
+          <div style={{ marginTop: 8, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
             <ToggleLine on={s.humidifierOn}  onChange={v => set({ humidifierOn: v })}  label={L('c_humid')} />
             <ToggleLine on={s.airPurifierOn} onChange={v => set({ airPurifierOn: v })} label={L('c_purif')} />
             <ToggleLine on={s.ventilationOn} onChange={v => set({ ventilationOn: v })} label={L('mode_fan')} />
           </div>
         </div>
 
-        <div className="card">
+        <div className="card" style={{ padding: 12, minHeight: 0 }}>
           <div className="card-h">
             <div className="title">{L('c_compressor')}</div>
             <span className={`stat-trend ${s.compressorOn ? 'down' : 'flat'}`} style={{ padding: '2px 8px' }}>
               {off ? 'OFFLINE' : s.compressorOn ? L('s_run') : L('s_idle')}
             </span>
           </div>
-          <div style={{ display: 'grid', placeItems: 'center', padding: '6px 0 0 0' }}>
+          <div style={{ display: 'grid', placeItems: 'center', padding: '2px 0 0 0' }}>
             <Donut value={s.compFreqHz} max={110} color={s.compressorOn ? '#2A6FDB' : '#B8C0CC'}
-                   label={off ? '—' : `${s.compFreqHz.toFixed(0)}`} sub="Hz" />
+                   label={off ? '—' : `${s.compFreqHz.toFixed(0)}`} sub="Hz" size={108} />
           </div>
         </div>
 
-        <div className="card">
+        <div className="card" style={{ padding: 12, minHeight: 0 }}>
           <div className="card-h">
             <div className="title">{L('m_pm25')}</div>
             <span className={`stat-trend ${!off && s.pm25 < 35 ? 'down' : !off && s.pm25 < 75 ? 'flat' : 'up'}`} style={{ padding: '2px 8px' }}>
               {off ? 'OFFLINE' : s.pm25 < 35 ? 'Good' : s.pm25 < 75 ? 'Moderate' : 'Poor'}
             </span>
           </div>
-          <div style={{ display: 'grid', placeItems: 'center', padding: '6px 0 0 0' }}>
+          <div style={{ display: 'grid', placeItems: 'center', padding: '2px 0 0 0' }}>
             <Donut value={off ? 0 : Math.min(s.pm25, 120)} max={120}
                    color={off ? '#B8C0CC' : s.pm25 < 35 ? '#1F8A5B' : s.pm25 < 75 ? '#D97757' : '#C0364E'}
-                   label={off ? '—' : s.pm25.toFixed(0)} sub="µg/m³" />
+                   label={off ? '—' : s.pm25.toFixed(0)} sub="µg/m³" size={108} />
           </div>
         </div>
       </div>
@@ -184,7 +184,7 @@ function SchematicScreen({ s, set, L, onPick }) {
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 286px', gap: 12, height: '100%' }}>
       {/* ── SVG schematic ── */}
-      <div className="card" style={{ padding: 0, overflow: 'hidden', display: 'grid', gridTemplateRows: 'auto 1fr' }}>
+      <div className="card" style={{ padding: 0, overflow: 'visible', display: 'grid', gridTemplateRows: 'auto 1fr' }}>
         <div className="card-h" style={{ padding: '10px 14px 0' }}>
           <div>
             <div className="title">{L('nav_schematic')} — {isKorea ? 'KOREA' : 'MALAYSIA'} · {L('mode_' + s.mode).toUpperCase()}</div>
@@ -517,7 +517,7 @@ function SchematicSVG({ s, isKorea, flow, heat, L, onPick }) {
   };
 
   return (
-    <svg className="schem-svg" viewBox="0 0 900 460" preserveAspectRatio="xMidYMid meet">
+    <svg className="schem-svg" viewBox="-12 -12 944 484" preserveAspectRatio="xMidYMid meet">
       <style>{`
         @keyframes fanSpin { to { transform: rotate(360deg); } }
         @keyframes flowDash { to { stroke-dashoffset: -24; } }

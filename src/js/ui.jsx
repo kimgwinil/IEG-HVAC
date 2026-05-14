@@ -61,9 +61,9 @@ const Icon = ({ name, size = 18, stroke = 'currentColor', strokeWidth = 1.8, fil
 };
 
 // ── Stat card ────────────────────────────────────────────────────────────
-function StatCard({ tone = 'mint', icon, label, value, unit, foot, trend, sparkData, sparkColor }) {
+function StatCard({ tone = 'mint', icon, label, value, unit, foot, trend, sparkData, sparkColor, compact = false }) {
   return (
-    <div className={`stat ${tone}`}>
+    <div className={`stat ${tone} ${compact ? 'compact' : ''}`}>
       <div className="stat-h">
         <div className="stat-label">{label}</div>
         <div className="stat-ico"><Icon name={icon} size={18} /></div>
@@ -196,6 +196,8 @@ function LineChart({ series, height = 220, padY = 18, padL = 36, padR = 12, padT
 function Donut({ value, max = 100, label, color = '#14B8A6', sub, size = 130 }) {
   const r = 52, c = 2 * Math.PI * r;
   const pct = Math.max(0, Math.min(1, value / max));
+  const labelSize = size <= 112 ? 20 : 22;
+  const subSize = size <= 112 ? 9 : 10;
   return (
     <svg width={size} height={size} viewBox="0 0 130 130">
       <circle cx="65" cy="65" r={r} stroke="#ECEFF3" strokeWidth="11" fill="none" />
@@ -207,8 +209,8 @@ function Donut({ value, max = 100, label, color = '#14B8A6', sub, size = 130 }) 
         strokeDashoffset={c - pct * c}
         transform="rotate(-90 65 65)"
       />
-      <text x="65" y="63" textAnchor="middle" fontFamily="JetBrains Mono" fontSize="22" fontWeight="600" fill="#0F1A2E">{label}</text>
-      {sub && <text x="65" y="80" textAnchor="middle" fontFamily="Pretendard" fontSize="10" fill="#5B6577">{sub}</text>}
+      <text x="65" y="63" textAnchor="middle" fontFamily="JetBrains Mono" fontSize={labelSize} fontWeight="600" fill="#0F1A2E">{label}</text>
+      {sub && <text x="65" y="80" textAnchor="middle" fontFamily="Pretendard" fontSize={subSize} fill="#5B6577">{sub}</text>}
     </svg>
   );
 }

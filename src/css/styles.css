@@ -421,6 +421,24 @@ input, select, textarea { font-family: inherit; }
 .stat .stat-trend.down { background: #E1F1E8; color: #16704C; }
 .stat .stat-trend.flat { background: #ECEEF1; color: #5B6577; }
 
+.stat.compact {
+  min-height: 106px;
+  padding: 12px 13px;
+}
+.stat.compact .stat-label {
+  font-size: 11px;
+}
+.stat.compact .stat-ico {
+  width: 28px; height: 28px;
+}
+.stat.compact .stat-val {
+  font-size: 31px;
+}
+.stat.compact .stat-unit {
+  font-size: 12px;
+  margin-left: 4px;
+}
+
 .stat.mint  .stat-ico { background: var(--mint);  color: var(--mint-d); }
 .stat.sky   .stat-ico { background: var(--sky);   color: var(--sky-d); }
 .stat.peach .stat-ico { background: var(--peach); color: var(--peach-d); }
