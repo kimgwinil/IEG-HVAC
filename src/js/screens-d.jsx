@@ -281,7 +281,7 @@ function LessonScreen({ s, set, L, lang, lessonN, closeLesson }) {
   const formulas = LESSON_FORMULAS[c.n] || [];
 
   return (
-    <div style={{ display: 'grid', gridTemplateRows: 'auto minmax(0, 1fr)', gap: 10, height: '100%', overflow: 'hidden' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10, height: '100%', overflow: 'hidden' }}>
 
       {/* ── Header ── */}
       <div className="card" style={{
@@ -289,6 +289,7 @@ function LessonScreen({ s, set, L, lang, lessonN, closeLesson }) {
         alignItems: 'center', gap: 14,
         borderTop: `4px solid ${cat.color}`,
         padding: 12,
+        flexShrink: 0,
       }}>
         <button className="btn ghost" onClick={() => closeLesson(null)} style={{ paddingLeft: 0 }}>
           <Icon name="chev" size={16} style={{ transform: 'rotate(180deg)' }} />
@@ -325,11 +326,11 @@ function LessonScreen({ s, set, L, lang, lessonN, closeLesson }) {
         </div>
       </div>
 
-      {/* ── Body ── */}
-      <div style={{ display: 'flex', gap: 10, minHeight: 0, overflow: 'hidden' }}>
+      {/* ── Body: flex:1 로 헤더 이후 남은 높이 전부 확보 ── */}
+      <div style={{ flex: 1, minHeight: 0, display: 'flex', gap: 10, overflow: 'hidden' }}>
 
-        {/* LEFT: objectives + principle + formulas + procedure — single scrollable column */}
-        <div style={{ flex: '1.1 1 0', display: 'flex', flexDirection: 'column', gap: 10, minHeight: 0, overflowY: 'auto', paddingRight: 2 }}>
+        {/* LEFT: 스크롤 가능한 단일 컬럼 — 학습목표 · 동작원리 · 실습절차 */}
+        <div style={{ flex: '1.1 1 0', minHeight: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 10, paddingRight: 4 }}>
 
           {/* Objectives — BLUE */}
           <div style={{
@@ -381,8 +382,8 @@ function LessonScreen({ s, set, L, lang, lessonN, closeLesson }) {
           </div>
         </div>
 
-        {/* RIGHT: inputs + live outputs + observation chart */}
-        <div style={{ flex: '1 1 0', display: 'grid', gridTemplateRows: 'auto auto minmax(0, 1fr)', gap: 10, minHeight: 0 }}>
+        {/* RIGHT: 입력조정 · 실시간 출력 · 관찰 차트 — 원래 레이아웃 유지 */}
+        <div style={{ flex: '1 1 0', minHeight: 0, display: 'grid', gridTemplateRows: 'auto auto minmax(0, 1fr)', gap: 10 }}>
 
           {/* Inputs — GRAY */}
           <div style={{
@@ -426,7 +427,7 @@ function LessonScreen({ s, set, L, lang, lessonN, closeLesson }) {
             </div>
           </div>
 
-          {/* Observation chart — ORANGE */}
+          {/* Observation chart — ORANGE, minHeight:0 으로 1fr 내에서 클리핑 */}
           <div style={{
             background: SEC.obs.bg, borderRadius: 12,
             border: `1px solid ${SEC.obs.border}`, padding: '14px 16px',
