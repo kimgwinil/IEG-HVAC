@@ -328,13 +328,14 @@ function LessonScreen({ s, set, L, lang, lessonN, closeLesson }) {
       {/* ── Body ── */}
       <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr', gap: 10, minHeight: 0 }}>
 
-        {/* LEFT: objectives + principle + formulas + procedure */}
-        <div style={{ display: 'grid', gridTemplateRows: 'auto auto minmax(0, 1fr)', gap: 10, minHeight: 0, overflow: 'auto' }}>
+        {/* LEFT: objectives + principle + formulas + procedure — single scrollable column */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, minHeight: 0, overflowY: 'auto', paddingRight: 2 }}>
 
           {/* Objectives — BLUE */}
           <div style={{
             background: SEC.obj.bg, borderRadius: 12,
             border: `1px solid ${SEC.obj.border}`, padding: '14px 16px',
+            flexShrink: 0,
           }}>
             <SectionHeader sec={SEC.obj} />
             <ol style={{ margin: 0, padding: '0 0 0 20px', fontSize: 12.5, color: '#1a2d5a', lineHeight: 1.6 }}>
@@ -348,6 +349,7 @@ function LessonScreen({ s, set, L, lang, lessonN, closeLesson }) {
           <div style={{
             background: SEC.prin.bg, borderRadius: 12,
             border: `1px solid ${SEC.prin.border}`, padding: '14px 16px',
+            flexShrink: 0,
           }}>
             <SectionHeader sec={SEC.prin} extra={comp?.spec} />
             <p style={{ margin: 0, fontSize: 12.5, color: '#2e1e6e', lineHeight: 1.7 }}>
@@ -360,9 +362,9 @@ function LessonScreen({ s, set, L, lang, lessonN, closeLesson }) {
           <div style={{
             background: SEC.proc.bg, borderRadius: 12,
             border: `1px solid ${SEC.proc.border}`, padding: '14px 16px',
-            overflow: 'auto',
+            flexShrink: 0,
           }}>
-            <SectionHeader sec={SEC.proc} />
+            <SectionHeader sec={SEC.proc} extra={`${c.proc[lang].length}단계`} />
             <ol style={{ margin: 0, padding: '0 0 0 0', listStyle: 'none', fontSize: 12.5, color: '#143d28', lineHeight: 1.65 }}>
               {c.proc[lang].map((p, i) => (
                 <li key={i} style={{ display: 'flex', gap: 10, marginBottom: 8 }}>
