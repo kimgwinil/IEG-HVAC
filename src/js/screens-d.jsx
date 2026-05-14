@@ -326,7 +326,7 @@ function LessonScreen({ s, set, L, lang, lessonN, closeLesson }) {
       </div>
 
       {/* ── Body ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr', gap: 10, minHeight: 0 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr', gridAutoRows: 'minmax(0, 1fr)', gap: 10, minHeight: 0, overflow: 'hidden' }}>
 
         {/* LEFT: objectives + principle + formulas + procedure — single scrollable column */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, minHeight: 0, overflowY: 'auto', paddingRight: 2 }}>
