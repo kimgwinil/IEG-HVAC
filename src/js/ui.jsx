@@ -61,9 +61,9 @@ const Icon = ({ name, size = 18, stroke = 'currentColor', strokeWidth = 1.8, fil
 };
 
 // ── Stat card ────────────────────────────────────────────────────────────
-function StatCard({ tone = 'mint', icon, label, value, unit, foot, trend, sparkData, sparkColor, compact = false }) {
+function StatCard({ tone = 'mint', icon, label, value, unit, foot, trend, sparkData, sparkColor, compact = false, tight = false }) {
   return (
-    <div className={`stat ${tone} ${compact ? 'compact' : ''}`}>
+    <div className={`stat ${tone} ${compact ? 'compact' : ''} ${tight ? 'tight' : ''}`}>
       <div className="stat-h">
         <div className="stat-label">{label}</div>
         <div className="stat-ico"><Icon name={icon} size={18} /></div>

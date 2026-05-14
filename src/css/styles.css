@@ -439,6 +439,27 @@ input, select, textarea { font-family: inherit; }
   margin-left: 4px;
 }
 
+.stat.tight {
+  min-height: 88px;
+  padding: 9px 10px;
+}
+.stat.tight .stat-label {
+  font-size: 10px;
+}
+.stat.tight .stat-ico {
+  width: 24px; height: 24px;
+}
+.stat.tight .stat-val {
+  font-size: 24px;
+}
+.stat.tight .stat-unit {
+  font-size: 11px;
+  margin-left: 3px;
+}
+.stat.tight .stat-foot {
+  font-size: 10px;
+}
+
 .stat.mint  .stat-ico { background: var(--mint);  color: var(--mint-d); }
 .stat.sky   .stat-ico { background: var(--sky);   color: var(--sky-d); }
 .stat.peach .stat-ico { background: var(--peach); color: var(--peach-d); }

@@ -184,36 +184,36 @@ function EnergyScreen({ s, L }) {
   const week = Array.from({ length: 7 }, (_, i) => 14 + Math.sin(i / 2) * 3 + (i === 6 ? -2 : 0));
 
   return (
-    <div style={{ display: 'grid', gridTemplateRows: '106px minmax(0, 1fr) 168px', gap: 6, height: '100%', overflow: 'hidden' }}>
+    <div style={{ display: 'grid', gridTemplateRows: '88px 152px 136px', gap: 6, height: '100%', overflow: 'hidden' }}>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 7 }}>
-        <StatCard compact tone="lilac" icon="bolt" label="Today (kWh)" value={total24.toFixed(1)} unit="kWh"
+        <StatCard compact tight tone="lilac" icon="bolt" label="Today (kWh)" value={total24.toFixed(1)} unit="kWh"
                   foot={`vs yesterday`} trend={{ dir: 'down', label: '−6%' }} />
-        <StatCard compact tone="peach" icon="bolt" label="Today (cost)" value={`₩${(cost / 1000).toFixed(1)}k`} unit=""
+        <StatCard compact tight tone="peach" icon="bolt" label="Today (cost)" value={`₩${(cost / 1000).toFixed(1)}k`} unit=""
                   foot={`${ratePerKWh}/kWh`} trend={{ dir: 'down', label: '−4%' }} />
-        <StatCard compact tone="mint" icon="eq" label="Avg EER (24h)" value={(s.eer * 0.95).toFixed(2)} unit=""
+        <StatCard compact tight tone="mint" icon="eq" label="Avg EER (24h)" value={(s.eer * 0.95).toFixed(2)} unit=""
                   foot="Target ≥ 2.5" trend={{ dir: 'up', label: '+0.12' }} />
-        <StatCard compact tone="sky" icon="leaf" label="CO₂ saved" value="3.4" unit="kg"
+        <StatCard compact tight tone="sky" icon="leaf" label="CO₂ saved" value="3.4" unit="kg"
                   foot="vs baseline (eco mode)" trend={{ dir: 'up', label: '+12%' }} />
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1.6fr 1fr', gap: 8, minHeight: 0 }}>
-        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0 }}>
+        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, padding: 8 }}>
           <div className="card-h">
             <div className="title">{L('l_24h')} · Hourly Consumption</div>
             <span style={{ fontSize: 11, color: 'var(--ink-4)' }}>kWh</span>
           </div>
           <HourlyBars hours={hours} />
         </div>
-        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto auto 1fr', minHeight: 0, padding: 10 }}>
+        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto auto 1fr', minHeight: 0, padding: 8 }}>
           <div className="card-h"><div className="title">Energy Breakdown</div></div>
-          <StackedBar segments={breakdown} height={14} />
-          <div style={{ display: 'grid', gap: 5, marginTop: 8, alignContent: 'start', overflow: 'auto' }}>
+          <StackedBar segments={breakdown} height={12} />
+          <div style={{ display: 'grid', gap: 4, marginTop: 6, alignContent: 'start', overflow: 'auto' }}>
             {breakdown.map(b => (
-              <div key={b.label} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12 }}>
-                <span style={{ width: 9, height: 9, borderRadius: 3, background: b.color }}></span>
-                <span style={{ flex: 1, color: 'var(--ink-2)' }}>{b.label}</span>
-                <span style={{ fontFamily: 'JetBrains Mono', color: 'var(--ink)', fontWeight: 600 }}>{b.value.toFixed(1)}</span>
-                <span style={{ color: 'var(--ink-4)', fontSize: 11, width: 38, textAlign: 'right', fontFamily: 'JetBrains Mono' }}>
+              <div key={b.label} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11 }}>
+                <span style={{ width: 8, height: 8, borderRadius: 3, background: b.color }}></span>
+                <span style={{ flex: 1, color: 'var(--ink-2)', minWidth: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{b.label}</span>
+                <span style={{ fontFamily: 'JetBrains Mono', color: 'var(--ink)', fontWeight: 600, fontSize: 10.5 }}>{b.value.toFixed(1)}</span>
+                <span style={{ color: 'var(--ink-4)', fontSize: 10, width: 32, textAlign: 'right', fontFamily: 'JetBrains Mono' }}>
                   {(b.value / total24 * 100).toFixed(0)}%
                 </span>
               </div>
@@ -223,16 +223,16 @@ function EnergyScreen({ s, L }) {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, minHeight: 0 }}>
-        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, padding: 8 }}>
+        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, padding: 6 }}>
           <div className="card-h">
             <div className="title">{L('l_7d')}</div>
             <span style={{ fontSize: 11, color: 'var(--ink-4)', fontFamily: 'JetBrains Mono' }}>Σ {week.reduce((a, b) => a + b, 0).toFixed(0)} kWh</span>
           </div>
           <WeeklyBars data={week} />
         </div>
-        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, padding: 8 }}>
+        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, padding: 6 }}>
           <div className="card-h"><div className="title">Tariff / Demand</div></div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 6, alignContent: 'start', overflow: 'auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 4, alignContent: 'start', overflow: 'auto' }}>
             <MiniMetric label="Peak Today" value="3.4" unit="kW" tone="peach" />
             <MiniMetric label="Off-peak %" value="46" unit="%" tone="mint" />
             <MiniMetric label="Avg Demand" value={(s.powerKW * 0.85).toFixed(2)} unit="kW" tone="sky" />
@@ -249,25 +249,25 @@ function EnergyScreen({ s, L }) {
 function HourlyBars({ hours }) {
   const max = Math.max(...hours);
   return (
-    <svg viewBox="0 0 800 176" preserveAspectRatio="none" style={{ width: '100%', height: '100%' }}>
+    <svg viewBox="0 0 800 136" preserveAspectRatio="none" style={{ width: '100%', height: '100%' }}>
       {hours.map((v, i) => {
         const x = 32 + i * 30;
-        const h = (v / max) * 122;
-        const y = 150 - h;
+        const h = (v / max) * 92;
+        const y = 116 - h;
         const isPeak = (i >= 13 && i <= 17);
         return (
           <g key={i}>
             <rect x={x} y={y} width="20" height={h} rx="3"
                   fill={isPeak ? '#D97757' : '#2A6FDB'} opacity={0.85} />
             {i % 3 === 0 && (
-              <text x={x + 10} y={168} fontSize="9" textAnchor="middle" fill="#8A93A4" fontFamily="JetBrains Mono">
+              <text x={x + 10} y={130} fontSize="8.5" textAnchor="middle" fill="#8A93A4" fontFamily="JetBrains Mono">
                 {String(i).padStart(2, '0')}
               </text>
             )}
           </g>
         );
       })}
-      <line x1="0" y1="150" x2="800" y2="150" stroke="#E7EBF0" />
+      <line x1="0" y1="116" x2="800" y2="116" stroke="#E7EBF0" />
     </svg>
   );
 }
@@ -276,17 +276,17 @@ function WeeklyBars({ data }) {
   const max = Math.max(...data);
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   return (
-    <svg viewBox="0 0 400 176" preserveAspectRatio="none" style={{ width: '100%', height: '100%' }}>
+    <svg viewBox="0 0 400 136" preserveAspectRatio="none" style={{ width: '100%', height: '100%' }}>
       {data.map((v, i) => {
         const w = 36;
         const x = 18 + i * 53;
-        const h = (v / max) * 122;
-        const y = 150 - h;
+        const h = (v / max) * 92;
+        const y = 116 - h;
         return (
           <g key={i}>
             <rect x={x} y={y} width={w} height={h} rx="6" fill="#14B8A6" opacity="0.85" />
-            <text x={x + w / 2} y={y - 4} fontSize="10" textAnchor="middle" fill="#0F1A2E" fontFamily="JetBrains Mono" fontWeight="600">{v.toFixed(0)}</text>
-            <text x={x + w / 2} y={168} fontSize="10" textAnchor="middle" fill="#8A93A4">{days[i]}</text>
+            <text x={x + w / 2} y={y - 3} fontSize="9" textAnchor="middle" fill="#0F1A2E" fontFamily="JetBrains Mono" fontWeight="600">{v.toFixed(0)}</text>
+            <text x={x + w / 2} y={130} fontSize="9" textAnchor="middle" fill="#8A93A4">{days[i]}</text>
           </g>
         );
       })}
