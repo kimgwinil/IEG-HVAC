@@ -188,35 +188,6 @@ function App() {
           </div>
         </div>
 
-        {/* Bottom physical buttons */}
-        <div className="bezel-controls">
-          <div className="left-info">
-            <span><span className="dot"></span> SYSTEM ONLINE</span>
-            <span>3Φ 380V · 60Hz</span>
-            <span>R410A</span>
-          </div>
-          <HwButton variant="power" lampOn={state.power}
-                    label="POWER"
-                    onClick={() => update({ power: !state.power })} />
-          <HwButton variant="run"   lampOn={state.compressorOn || state.heaterOn}
-                    label="RUN"
-                    onClick={() => {
-                      if (!state.power) { update({ power: true, mode: 'auto' }); }
-                      else if (state.mode === 'off') { update({ mode: 'auto' }); }
-                    }} />
-          <HwButton variant="alarm" lampOn={activeAlarms > 0}
-                    label="ALARM"
-                    onClick={() => {
-                      if (activeAlarms > 0) {
-                        update({ alarms: state.alarms.map(a => ({ ...a, ack: true })) });
-                      }
-                      goView('alarm');
-                    }} />
-          <HwButton variant="stop"  label="STOP"
-                    onClick={() => update({ power: false, mode: 'off' })} />
-          <HwButton variant="estop" label=""
-                    onClick={() => update({ power: false, mode: 'off', fanSpeed: 0 })} />
-        </div>
       </div>
     </Stage>
   );
@@ -321,18 +292,6 @@ function RowK({ label, children }) {
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
       <span style={{ fontSize: 12, color: 'var(--ink-2)', fontWeight: 600 }}>{label}</span>
       {children}
-    </div>
-  );
-}
-
-// ── Hardware bottom buttons ──────────────────────────────────────────────
-function HwButton({ variant, lampOn, label, onClick }) {
-  return (
-    <div className={`btn-hw ${variant} ${lampOn ? 'on' : ''}`}>
-      {variant !== 'estop' && variant !== 'stop' && <div className="lamp"></div>}
-      <button className="key" onClick={onClick}>{label}</button>
-      {variant === 'stop' && <div className="lbl">RESET</div>}
-      {variant === 'estop' && <div className="lbl">E-STOP</div>}
     </div>
   );
 }
