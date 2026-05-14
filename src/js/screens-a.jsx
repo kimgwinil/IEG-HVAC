@@ -206,15 +206,17 @@ function SchematicScreen({ s, set, L, onPick }) {
         <SchematicControlPanel s={s} set={set} L={L} isKorea={isKorea} sections={['control', 'status']} statusLayout="horizontal" />
       </div>
 
-      <div style={{ gridColumn: '1', gridRow: '2', minHeight: 0 }}>
-        <SchematicControlPanel s={s} set={set} L={L} isKorea={isKorea} sections={['accessories']} layout="horizontal" />
+      <div style={{ gridColumn: '1', gridRow: '2', minHeight: 0, display: 'flex', justifyContent: 'flex-start' }}>
+        <div style={{ width: '54%', maxWidth: 560, minWidth: 420 }}>
+          <SchematicControlPanel s={s} set={set} L={L} isKorea={isKorea} sections={['accessories']} layout="horizontal" compact />
+        </div>
       </div>
     </div>
   );
 }
 
 // ── SCHEMATIC CONTROL PANEL (right side) ─────────────────────────────────
-function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'status', 'accessories'], layout = 'vertical', statusLayout = 'vertical' }) {
+function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'status', 'accessories'], layout = 'vertical', statusLayout = 'vertical', compact = false }) {
   const compRun = s.compressorOn;
   const T_disc  = compRun ? `${(s.outdoorTemp + 30).toFixed(0)}°C` : '—';
   const T_cond  = compRun ? `${(s.outdoorTemp + 14).toFixed(0)}°C` : '—';
@@ -380,21 +382,21 @@ function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'sta
       )}
 
       {sections.includes('accessories') && (
-      <div className="card" style={{ padding: accessoriesHorizontal ? '8px 10px' : '9px 9px 8px' }}>
+      <div className="card" style={{ padding: accessoriesHorizontal ? (compact ? '6px 8px' : '8px 10px') : '9px 9px 8px' }}>
         <SecHead title="부속 장치" sub="Accessories Control" color="#1F8A5B" />
 
         {accessoriesHorizontal ? (
-          <div style={{ display: 'grid', gridTemplateColumns: '1.05fr 1.05fr 1.2fr', gap: 10, alignItems: 'start' }}>
-            <div style={{ display: 'grid', gap: 6 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: compact ? 8 : 10, alignItems: 'start' }}>
+            <div style={{ display: 'grid', gap: compact ? 4 : 6 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <div style={{ width: 24, height: 24, borderRadius: 7,
+                  <div style={{ width: compact ? 22 : 24, height: compact ? 22 : 24, borderRadius: 7,
                                 background: s.humidifierOn && s.power ? '#DCF1E6' : '#F1F4F8',
                                 color: s.humidifierOn && s.power ? '#1F8A5B' : 'var(--ink-4)',
                                 display: 'grid', placeItems: 'center' }}>
-                    <Icon name="drop" size={13} />
+                    <Icon name="drop" size={compact ? 12 : 13} />
                   </div>
-                  <span style={{ fontSize: 11.5, fontWeight: 700, color: s.humidifierOn && s.power ? '#1F8A5B' : 'var(--ink-3)' }}>{L('c_humid')}</span>
+                  <span style={{ fontSize: compact ? 10.5 : 11.5, fontWeight: 700, color: s.humidifierOn && s.power ? '#1F8A5B' : 'var(--ink-3)' }}>{L('c_humid')}</span>
                 </div>
                 <Toggle on={s.humidifierOn} onChange={v => set({ humidifierOn: v })} />
               </div>
@@ -404,32 +406,32 @@ function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'sta
               )}
             </div>
 
-            <div style={{ display: 'grid', gap: 6 }}>
+            <div style={{ display: 'grid', gap: compact ? 4 : 6 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <div style={{ width: 24, height: 24, borderRadius: 7,
+                  <div style={{ width: compact ? 22 : 24, height: compact ? 22 : 24, borderRadius: 7,
                                 background: s.airPurifierOn && s.power ? '#E8E2F4' : '#F1F4F8',
                                 color: s.airPurifierOn && s.power ? '#6B5BD2' : 'var(--ink-4)',
                                 display: 'grid', placeItems: 'center' }}>
-                    <Icon name="purifier" size={13} />
+                    <Icon name="purifier" size={compact ? 12 : 13} />
                   </div>
-                  <span style={{ fontSize: 11.5, fontWeight: 700, color: s.airPurifierOn && s.power ? '#6B5BD2' : 'var(--ink-3)' }}>{L('c_purif')}</span>
+                  <span style={{ fontSize: compact ? 10.5 : 11.5, fontWeight: 700, color: s.airPurifierOn && s.power ? '#6B5BD2' : 'var(--ink-3)' }}>{L('c_purif')}</span>
                 </div>
                 <Toggle on={s.airPurifierOn} onChange={v => set({ airPurifierOn: v })} />
               </div>
-              <div style={{ fontSize: 11, color: 'var(--ink-3)', fontFamily: 'JetBrains Mono' }}>PM2.5 {s.pm25.toFixed(0)} µg/m³</div>
+              <div style={{ fontSize: compact ? 10 : 11, color: 'var(--ink-3)', fontFamily: 'JetBrains Mono' }}>PM2.5 {s.pm25.toFixed(0)} µg/m³</div>
             </div>
 
-            <div style={{ display: 'grid', gap: 6 }}>
+            <div style={{ display: 'grid', gap: compact ? 4 : 6 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <div style={{ width: 24, height: 24, borderRadius: 7,
+                  <div style={{ width: compact ? 22 : 24, height: compact ? 22 : 24, borderRadius: 7,
                                 background: s.ventilationOn && s.power ? '#FBE3D5' : '#F1F4F8',
                                 color: s.ventilationOn && s.power ? '#D97757' : 'var(--ink-4)',
                                 display: 'grid', placeItems: 'center' }}>
-                    <Icon name="fan" size={13} />
+                    <Icon name="fan" size={compact ? 12 : 13} />
                   </div>
-                  <span style={{ fontSize: 11.5, fontWeight: 700, color: s.ventilationOn && s.power ? '#D97757' : 'var(--ink-3)' }}>Ventilation</span>
+                  <span style={{ fontSize: compact ? 10.5 : 11.5, fontWeight: 700, color: s.ventilationOn && s.power ? '#D97757' : 'var(--ink-3)' }}>Ventilation</span>
                 </div>
                 <Toggle on={s.ventilationOn} onChange={v => set({ ventilationOn: v })} />
               </div>
@@ -437,7 +439,7 @@ function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'sta
                 <SliderRow label={`CO₂ ${s.targetCO2} ppm`} unit="ppm" min={600} max={1500} step={50}
                            value={s.targetCO2} onChange={v => set({ targetCO2: v })} />
               ) : (
-                <div style={{ fontSize: 11, color: 'var(--ink-3)', fontFamily: 'JetBrains Mono' }}>{Math.round(s.co2)} ppm</div>
+                <div style={{ fontSize: compact ? 10 : 11, color: 'var(--ink-3)', fontFamily: 'JetBrains Mono' }}>{Math.round(s.co2)} ppm</div>
               )}
             </div>
           </div>
