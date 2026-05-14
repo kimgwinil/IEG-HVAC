@@ -184,8 +184,8 @@ function EnergyScreen({ s, L }) {
   const week = Array.from({ length: 7 }, (_, i) => 14 + Math.sin(i / 2) * 3 + (i === 6 ? -2 : 0));
 
   return (
-    <div style={{ display: 'grid', gridTemplateRows: '88px 152px 136px', gap: 6, height: '100%', overflow: 'hidden' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 7 }}>
+    <div style={{ display: 'grid', gridTemplateRows: '82px 144px 132px', gap: 6, height: '100%', overflow: 'hidden' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 6 }}>
         <StatCard compact tight tone="lilac" icon="bolt" label="Today (kWh)" value={total24.toFixed(1)} unit="kWh"
                   foot={`vs yesterday`} trend={{ dir: 'down', label: '−6%' }} />
         <StatCard compact tight tone="peach" icon="bolt" label="Today (cost)" value={`₩${(cost / 1000).toFixed(1)}k`} unit=""
@@ -196,24 +196,24 @@ function EnergyScreen({ s, L }) {
                   foot="vs baseline (eco mode)" trend={{ dir: 'up', label: '+12%' }} />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1.6fr 1fr', gap: 8, minHeight: 0 }}>
-        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, padding: 8 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1.55fr 1fr', gap: 8, minHeight: 0 }}>
+        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, padding: 7 }}>
           <div className="card-h">
             <div className="title">{L('l_24h')} · Hourly Consumption</div>
             <span style={{ fontSize: 11, color: 'var(--ink-4)' }}>kWh</span>
           </div>
           <HourlyBars hours={hours} />
         </div>
-        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto auto 1fr', minHeight: 0, padding: 8 }}>
+        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto auto 1fr', minHeight: 0, padding: 7 }}>
           <div className="card-h"><div className="title">Energy Breakdown</div></div>
-          <StackedBar segments={breakdown} height={12} />
-          <div style={{ display: 'grid', gap: 4, marginTop: 6, alignContent: 'start', overflow: 'auto' }}>
+          <StackedBar segments={breakdown} height={10} />
+          <div style={{ display: 'grid', gap: 3, marginTop: 5, alignContent: 'start', overflow: 'auto' }}>
             {breakdown.map(b => (
-              <div key={b.label} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11 }}>
-                <span style={{ width: 8, height: 8, borderRadius: 3, background: b.color }}></span>
+              <div key={b.label} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10.5 }}>
+                <span style={{ width: 7, height: 7, borderRadius: 3, background: b.color }}></span>
                 <span style={{ flex: 1, color: 'var(--ink-2)', minWidth: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{b.label}</span>
-                <span style={{ fontFamily: 'JetBrains Mono', color: 'var(--ink)', fontWeight: 600, fontSize: 10.5 }}>{b.value.toFixed(1)}</span>
-                <span style={{ color: 'var(--ink-4)', fontSize: 10, width: 32, textAlign: 'right', fontFamily: 'JetBrains Mono' }}>
+                <span style={{ fontFamily: 'JetBrains Mono', color: 'var(--ink)', fontWeight: 600, fontSize: 10 }}>{b.value.toFixed(1)}</span>
+                <span style={{ color: 'var(--ink-4)', fontSize: 9.5, width: 28, textAlign: 'right', fontFamily: 'JetBrains Mono' }}>
                   {(b.value / total24 * 100).toFixed(0)}%
                 </span>
               </div>
@@ -223,16 +223,16 @@ function EnergyScreen({ s, L }) {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, minHeight: 0 }}>
-        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, padding: 6 }}>
+        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, padding: 5 }}>
           <div className="card-h">
             <div className="title">{L('l_7d')}</div>
             <span style={{ fontSize: 11, color: 'var(--ink-4)', fontFamily: 'JetBrains Mono' }}>Σ {week.reduce((a, b) => a + b, 0).toFixed(0)} kWh</span>
           </div>
           <WeeklyBars data={week} />
         </div>
-        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, padding: 6 }}>
+        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, padding: 5 }}>
           <div className="card-h"><div className="title">Tariff / Demand</div></div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 4, alignContent: 'start', overflow: 'auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 3, alignContent: 'start', overflow: 'auto' }}>
             <MiniMetric label="Peak Today" value="3.4" unit="kW" tone="peach" />
             <MiniMetric label="Off-peak %" value="46" unit="%" tone="mint" />
             <MiniMetric label="Avg Demand" value={(s.powerKW * 0.85).toFixed(2)} unit="kW" tone="sky" />
@@ -249,25 +249,25 @@ function EnergyScreen({ s, L }) {
 function HourlyBars({ hours }) {
   const max = Math.max(...hours);
   return (
-    <svg viewBox="0 0 800 136" preserveAspectRatio="none" style={{ width: '100%', height: '100%' }}>
+    <svg viewBox="0 0 800 126" preserveAspectRatio="none" style={{ width: '100%', height: '100%' }}>
       {hours.map((v, i) => {
         const x = 32 + i * 30;
-        const h = (v / max) * 92;
-        const y = 116 - h;
+        const h = (v / max) * 84;
+        const y = 108 - h;
         const isPeak = (i >= 13 && i <= 17);
         return (
           <g key={i}>
             <rect x={x} y={y} width="20" height={h} rx="3"
                   fill={isPeak ? '#D97757' : '#2A6FDB'} opacity={0.85} />
             {i % 3 === 0 && (
-              <text x={x + 10} y={130} fontSize="8.5" textAnchor="middle" fill="#8A93A4" fontFamily="JetBrains Mono">
+              <text x={x + 10} y={120} fontSize="8.5" textAnchor="middle" fill="#8A93A4" fontFamily="JetBrains Mono">
                 {String(i).padStart(2, '0')}
               </text>
             )}
           </g>
         );
       })}
-      <line x1="0" y1="116" x2="800" y2="116" stroke="#E7EBF0" />
+      <line x1="0" y1="108" x2="800" y2="108" stroke="#E7EBF0" />
     </svg>
   );
 }
@@ -276,17 +276,17 @@ function WeeklyBars({ data }) {
   const max = Math.max(...data);
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   return (
-    <svg viewBox="0 0 400 136" preserveAspectRatio="none" style={{ width: '100%', height: '100%' }}>
+    <svg viewBox="0 0 400 126" preserveAspectRatio="none" style={{ width: '100%', height: '100%' }}>
       {data.map((v, i) => {
         const w = 36;
         const x = 18 + i * 53;
-        const h = (v / max) * 92;
-        const y = 116 - h;
+        const h = (v / max) * 84;
+        const y = 108 - h;
         return (
           <g key={i}>
             <rect x={x} y={y} width={w} height={h} rx="6" fill="#14B8A6" opacity="0.85" />
             <text x={x + w / 2} y={y - 3} fontSize="9" textAnchor="middle" fill="#0F1A2E" fontFamily="JetBrains Mono" fontWeight="600">{v.toFixed(0)}</text>
-            <text x={x + w / 2} y={130} fontSize="9" textAnchor="middle" fill="#8A93A4">{days[i]}</text>
+            <text x={x + w / 2} y={120} fontSize="9" textAnchor="middle" fill="#8A93A4">{days[i]}</text>
           </g>
         );
       })}
@@ -305,10 +305,10 @@ function MiniMetric({ label, value, unit, tone = 'mint' }) {
   };
   const [bg, fg] = tones[tone];
   return (
-    <div style={{ padding: 6, background: bg, borderRadius: 9, minWidth: 0 }}>
-      <div style={{ fontSize: 9, color: fg, fontWeight: 700, letterSpacing: '.04em', textTransform: 'uppercase' }}>{label}</div>
-      <div style={{ fontFamily: 'JetBrains Mono', fontSize: 16, fontWeight: 600, color: 'var(--ink)', marginTop: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-        {value}<span style={{ fontSize: 10, marginLeft: 2, color: 'var(--ink-3)', fontFamily: 'Pretendard' }}>{unit}</span>
+    <div style={{ padding: 5, background: bg, borderRadius: 8, minWidth: 0 }}>
+      <div style={{ fontSize: 8.5, color: fg, fontWeight: 700, letterSpacing: '.04em', textTransform: 'uppercase' }}>{label}</div>
+      <div style={{ fontFamily: 'JetBrains Mono', fontSize: 14, fontWeight: 600, color: 'var(--ink)', marginTop: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        {value}<span style={{ fontSize: 9, marginLeft: 2, color: 'var(--ink-3)', fontFamily: 'Pretendard' }}>{unit}</span>
       </div>
     </div>
   );
