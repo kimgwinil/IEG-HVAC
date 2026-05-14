@@ -182,21 +182,21 @@ function SchematicScreen({ s, set, L, onPick }) {
   const flow    = s.compressorOn || s.heaterOn;
   const heat    = s.heaterOn || s.fourWayValve === 'heat';
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 286px', gap: 12, height: '100%' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 262px', gap: 10, height: '100%', overflow: 'hidden' }}>
       {/* ── SVG schematic ── */}
       <div className="card" style={{ padding: 0, overflow: 'visible', display: 'grid', gridTemplateRows: 'auto 1fr' }}>
-        <div className="card-h" style={{ padding: '10px 14px 0' }}>
+        <div className="card-h" style={{ padding: '8px 12px 0' }}>
           <div>
             <div className="title">{L('nav_schematic')} — {isKorea ? 'KOREA' : 'MALAYSIA'} · {L('mode_' + s.mode).toUpperCase()}</div>
             <div style={{ fontSize: 10.5, color: 'var(--ink-4)', marginTop: 3 }}>Click any component to view its principle</div>
           </div>
-          <div style={{ display: 'flex', gap: 10, fontSize: 10.5 }}>
+          <div style={{ display: 'flex', gap: 8, fontSize: 10 }}>
             <Legend dot="#D97757" label="Hot gas / High-P" />
             <Legend dot="#2A6FDB" label="Liquid / Low-P" />
             <Legend dot="#1F8A5B" label="Air flow" />
           </div>
         </div>
-        <div style={{ padding: '0 12px 10px', minHeight: 0 }}>
+        <div style={{ padding: '0 8px 8px', minHeight: 0 }}>
           <SchematicSVG s={s} isKorea={isKorea} flow={flow} heat={heat} L={L} onPick={onPick} />
         </div>
       </div>
@@ -248,14 +248,14 @@ function SchematicControlPanel({ s, set, L, isKorea }) {
   );
 
   return (
-    <div style={{ display: 'grid', gap: 10, alignContent: 'start', overflow: 'auto', height: '100%' }}>
+    <div style={{ display: 'grid', gap: 8, alignContent: 'start', overflow: 'auto', height: '100%' }}>
 
       {/* ── 운전 제어 ── */}
-      <div className="card" style={{ padding: '14px 14px 12px' }}>
+      <div className="card" style={{ padding: '11px 11px 10px' }}>
         <SecHead title="운전 제어" sub="Operation Control" color="#6B5BD2" />
 
         {/* Mode */}
-        <div style={{ marginBottom: 12 }}>
+        <div style={{ marginBottom: 10 }}>
           <div style={{ fontSize: 10.5, color: 'var(--ink-4)', fontWeight: 600, letterSpacing: '.04em', marginBottom: 6, textTransform: 'uppercase' }}>모드</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 4 }}>
             {['cool','heat','auto','dry','fan','off'].filter(m => !(!isKorea && m === 'heat')).map(m => {
@@ -264,7 +264,7 @@ function SchematicControlPanel({ s, set, L, isKorea }) {
               return (
                 <button key={m} onClick={() => set({ mode: m })}
                         style={{
-                          height: 32, borderRadius: 8, fontSize: 11, fontWeight: 700,
+                          height: 29, borderRadius: 8, fontSize: 10, fontWeight: 700,
                           background: active ? col + '18' : '#F7F9FB',
                           border: `1.5px solid ${active ? col : 'var(--line)'}`,
                           color: active ? col : 'var(--ink-3)',
@@ -275,15 +275,15 @@ function SchematicControlPanel({ s, set, L, isKorea }) {
         </div>
 
         {/* Setpoint */}
-        <div style={{ marginBottom: 12 }}>
+        <div style={{ marginBottom: 10 }}>
           <div style={{ fontSize: 10.5, color: 'var(--ink-4)', fontWeight: 600, letterSpacing: '.04em', marginBottom: 6, textTransform: 'uppercase' }}>설정 온도 Setpoint</div>
           <div style={{ display: 'grid', gridTemplateColumns: '36px 1fr 36px', gap: 8, alignItems: 'center' }}>
-            <button className="btn" style={{ height: 36, padding: 0, justifyContent: 'center', borderRadius: 10 }}
+            <button className="btn" style={{ height: 32, padding: 0, justifyContent: 'center', borderRadius: 9 }}
                     onClick={() => set({ targetTemp: Math.max(16, s.targetTemp - 1) })}>
               <Icon name="minus" size={16} />
             </button>
             <div style={{ textAlign: 'center' }}>
-              <div style={{ fontFamily: 'JetBrains Mono', fontSize: 32, fontWeight: 700, lineHeight: 1,
+              <div style={{ fontFamily: 'JetBrains Mono', fontSize: 28, fontWeight: 700, lineHeight: 1,
                             color: s.mode === 'heat' ? '#D97757' : '#2A6FDB' }}>
                 {s.targetTemp}<span style={{ fontSize: 14, marginLeft: 2, color: 'var(--ink-3)' }}>°C</span>
               </div>
@@ -291,7 +291,7 @@ function SchematicControlPanel({ s, set, L, isKorea }) {
                      onChange={e => set({ targetTemp: Number(e.target.value) })}
                      style={{ marginTop: 6, width: '100%' }} />
             </div>
-            <button className="btn" style={{ height: 36, padding: 0, justifyContent: 'center', borderRadius: 10 }}
+            <button className="btn" style={{ height: 32, padding: 0, justifyContent: 'center', borderRadius: 9 }}
                     onClick={() => set({ targetTemp: Math.min(30, s.targetTemp + 1) })}>
               <Icon name="plus" size={16} />
             </button>
@@ -313,7 +313,7 @@ function SchematicControlPanel({ s, set, L, isKorea }) {
       </div>
 
       {/* ── 실외기 상태 ── */}
-      <div className="card" style={{ padding: '14px 14px 12px' }}>
+      <div className="card" style={{ padding: '11px 11px 10px' }}>
         <SecHead title="실외기 상태" sub="Outdoor Unit — live" color="#D97757" />
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 10 }}>
@@ -323,7 +323,7 @@ function SchematicControlPanel({ s, set, L, isKorea }) {
             border: `1.5px solid ${compRun ? '#2A6FDB40' : 'var(--line-soft)'}`,
           }}>
             <div style={{ fontSize: 9.5, color: 'var(--ink-4)', fontWeight: 700, letterSpacing: '.05em', textTransform: 'uppercase', marginBottom: 4 }}>압축기 Comp.</div>
-            <div style={{ fontFamily: 'JetBrains Mono', fontWeight: 800, fontSize: 22, color: compRun ? '#2A6FDB' : '#B8C0CC', lineHeight: 1 }}>
+            <div style={{ fontFamily: 'JetBrains Mono', fontWeight: 800, fontSize: 19, color: compRun ? '#2A6FDB' : '#B8C0CC', lineHeight: 1 }}>
               {s.compFreqHz.toFixed(0)}<span style={{ fontSize: 11, fontWeight: 400, marginLeft: 2 }}>Hz</span>
             </div>
             <div style={{ fontFamily: 'JetBrains Mono', fontSize: 10, color: 'var(--ink-4)', marginTop: 3 }}>{s.powerKW.toFixed(2)} kW</div>
@@ -334,7 +334,7 @@ function SchematicControlPanel({ s, set, L, isKorea }) {
             border: `1.5px solid ${compRun ? '#D9775740' : 'var(--line-soft)'}`,
           }}>
             <div style={{ fontSize: 9.5, color: 'var(--ink-4)', fontWeight: 700, letterSpacing: '.05em', textTransform: 'uppercase', marginBottom: 4 }}>응축기 Cond.</div>
-            <div style={{ fontFamily: 'JetBrains Mono', fontWeight: 800, fontSize: 22, color: compRun ? '#D97757' : '#B8C0CC', lineHeight: 1 }}>
+            <div style={{ fontFamily: 'JetBrains Mono', fontWeight: 800, fontSize: 19, color: compRun ? '#D97757' : '#B8C0CC', lineHeight: 1 }}>
               {T_cond}
             </div>
             <div style={{ fontFamily: 'JetBrains Mono', fontSize: 10, color: 'var(--ink-4)', marginTop: 3 }}>{P_hi} ↑</div>
@@ -351,7 +351,7 @@ function SchematicControlPanel({ s, set, L, isKorea }) {
       </div>
 
       {/* ── 부속 장치 제어 ── */}
-      <div className="card" style={{ padding: '14px 14px 12px' }}>
+      <div className="card" style={{ padding: '11px 11px 10px' }}>
         <SecHead title="부속 장치" sub="Accessories Control" color="#1F8A5B" />
 
         {/* Humidifier */}

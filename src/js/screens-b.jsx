@@ -36,23 +36,23 @@ function AIScreen({ s, set, L }) {
   if (recs.length < 2) recs.push({ key: 'ai_r3' });
 
   return (
-    <div style={{ display: 'grid', gridTemplateRows: '152px 116px minmax(0, 1fr)', gap: 10, height: '100%', overflow: 'hidden' }}>
+    <div style={{ display: 'grid', gridTemplateRows: '138px 102px minmax(0, 1fr)', gap: 8, height: '100%', overflow: 'hidden' }}>
       {/* Health summary */}
-      <div className="card" style={{ display: 'grid', gridTemplateColumns: '150px 1fr 1fr', gap: 14, alignItems: 'center', padding: 12, minHeight: 0 }}>
+      <div className="card" style={{ display: 'grid', gridTemplateColumns: '132px 1fr 1fr', gap: 12, alignItems: 'center', padding: 10, minHeight: 0 }}>
         <div style={{ display: 'grid', placeItems: 'center' }}>
-          <Donut value={score} max={100} color={scoreColor} label={String(score)} sub={L('ai_health')} size={118} />
+          <Donut value={score} max={100} color={scoreColor} label={String(score)} sub={L('ai_health')} size={104} />
         </div>
         <div>
           <div style={{ fontSize: 11, color: 'var(--ink-3)', fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase' }}>
             {L('ai_health')}
           </div>
-          <div style={{ fontSize: 23, fontWeight: 700, marginTop: 3, color: 'var(--ink)' }}>{status}</div>
-          <div style={{ fontSize: 11.5, color: 'var(--ink-3)', marginTop: 3, lineHeight: 1.4 }}>
+          <div style={{ fontSize: 20, fontWeight: 700, marginTop: 2, color: 'var(--ink)' }}>{status}</div>
+          <div style={{ fontSize: 10.5, color: 'var(--ink-3)', marginTop: 2, lineHeight: 1.35 }}>
             {L('ai_status_normal')}.<br />
             Last full diagnostic cycle: {window.fmtClock(s.clockMin - 7)}
           </div>
         </div>
-        <div style={{ display: 'grid', gap: 10 }}>
+        <div style={{ display: 'grid', gap: 8 }}>
           <KPIRow label="Cycles today" value="34" delta="+8" deltaTone="up" />
           <KPIRow label="Avg EER (24h)" value={`${(s.eer * 0.95).toFixed(2)}`} delta="+0.12" deltaTone="up" />
           <KPIRow label="Predicted maintenance" value="14 days" delta={null} />
@@ -60,13 +60,13 @@ function AIScreen({ s, set, L }) {
       </div>
 
       {/* AI Recommendations */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, minHeight: 0 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 8, minHeight: 0 }}>
         {recs.slice(0, 3).map((r, i) => (
-          <div key={i} className="ai-rec" style={{ paddingTop: 10, paddingBottom: 10 }}>
+          <div key={i} className="ai-rec" style={{ paddingTop: 8, paddingBottom: 8, paddingLeft: 40 }}>
             <div className="ai-ico"><Icon name="ai" size={14} /></div>
-            <div className="t">{L(r.key + '_t')}</div>
-            <div className="d">{L(r.key + '_d')}</div>
-            <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
+            <div className="t" style={{ fontSize: 12 }}>{L(r.key + '_t')}</div>
+            <div className="d" style={{ fontSize: 10.5, lineHeight: 1.35 }}>{L(r.key + '_d')}</div>
+            <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
               <button className="btn primary sm">{L('a_apply')}</button>
               <button className="btn sm">Defer</button>
             </div>
@@ -127,10 +127,10 @@ function AIScreen({ s, set, L }) {
 
 function KPIRow({ label, value, delta, deltaTone }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', borderBottom: '1px solid var(--line-soft)', paddingBottom: 6 }}>
-      <span style={{ fontSize: 12, color: 'var(--ink-3)' }}>{label}</span>
+    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', borderBottom: '1px solid var(--line-soft)', paddingBottom: 5 }}>
+      <span style={{ fontSize: 11, color: 'var(--ink-3)' }}>{label}</span>
       <span>
-        <span style={{ fontFamily: 'JetBrains Mono', fontWeight: 600, fontSize: 16 }}>{value}</span>
+        <span style={{ fontFamily: 'JetBrains Mono', fontWeight: 600, fontSize: 14 }}>{value}</span>
         {delta && (
           <span className={`stat-trend ${deltaTone || 'flat'}`} style={{ marginLeft: 6, padding: '2px 6px' }}>
             {delta}
@@ -143,12 +143,12 @@ function KPIRow({ label, value, delta, deltaTone }) {
 
 function InferRow({ label, value, conf }) {
   return (
-    <div style={{ padding: 10, borderRadius: 10, background: '#F7F9FB' }}>
+    <div style={{ padding: 8, borderRadius: 10, background: '#F7F9FB' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-        <span style={{ fontSize: 11, color: 'var(--ink-3)', fontWeight: 600 }}>{label}</span>
+        <span style={{ fontSize: 10.5, color: 'var(--ink-3)', fontWeight: 600 }}>{label}</span>
         <span style={{ fontSize: 10, color: 'var(--ink-4)', fontFamily: 'JetBrains Mono' }}>{Math.round(conf * 100)}%</span>
       </div>
-      <div style={{ fontFamily: 'JetBrains Mono', fontWeight: 600, fontSize: 14, color: 'var(--ink)' }}>{value}</div>
+      <div style={{ fontFamily: 'JetBrains Mono', fontWeight: 600, fontSize: 13, color: 'var(--ink)' }}>{value}</div>
       <div style={{ height: 3, background: '#E7EBF0', borderRadius: 999, marginTop: 6, overflow: 'hidden' }}>
         <div style={{ width: `${conf * 100}%`, height: '100%', background: conf > 0.85 ? '#1F8A5B' : '#D97757' }}></div>
       </div>
@@ -184,7 +184,7 @@ function EnergyScreen({ s, L }) {
   const week = Array.from({ length: 7 }, (_, i) => 14 + Math.sin(i / 2) * 3 + (i === 6 ? -2 : 0));
 
   return (
-    <div style={{ display: 'grid', gridTemplateRows: '106px minmax(0, 1fr) minmax(0, 1fr)', gap: 10, height: '100%', overflow: 'hidden' }}>
+    <div style={{ display: 'grid', gridTemplateRows: '98px minmax(0, 1fr) minmax(0, 1fr)', gap: 8, height: '100%', overflow: 'hidden' }}>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 9 }}>
         <StatCard compact tone="lilac" icon="bolt" label="Today (kWh)" value={total24.toFixed(1)} unit="kWh"
                   foot={`vs yesterday`} trend={{ dir: 'down', label: '−6%' }} />
@@ -222,7 +222,7 @@ function EnergyScreen({ s, L }) {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, minHeight: 0 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, minHeight: 0 }}>
         <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, padding: 12 }}>
           <div className="card-h">
             <div className="title">{L('l_7d')}</div>
@@ -232,7 +232,7 @@ function EnergyScreen({ s, L }) {
         </div>
         <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, padding: 12 }}>
           <div className="card-h"><div className="title">Tariff / Demand</div></div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, alignContent: 'start' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 8, alignContent: 'start', overflow: 'auto' }}>
             <MiniMetric label="Peak Today" value="3.4" unit="kW" tone="peach" />
             <MiniMetric label="Off-peak %" value="46" unit="%" tone="mint" />
             <MiniMetric label="Avg Demand" value={(s.powerKW * 0.85).toFixed(2)} unit="kW" tone="sky" />
@@ -305,9 +305,9 @@ function MiniMetric({ label, value, unit, tone = 'mint' }) {
   };
   const [bg, fg] = tones[tone];
   return (
-    <div style={{ padding: 10, background: bg, borderRadius: 10 }}>
-      <div style={{ fontSize: 10, color: fg, fontWeight: 700, letterSpacing: '.04em', textTransform: 'uppercase' }}>{label}</div>
-      <div style={{ fontFamily: 'JetBrains Mono', fontSize: 22, fontWeight: 600, color: 'var(--ink)', marginTop: 4 }}>
+    <div style={{ padding: 8, background: bg, borderRadius: 10, minWidth: 0 }}>
+      <div style={{ fontSize: 9, color: fg, fontWeight: 700, letterSpacing: '.04em', textTransform: 'uppercase' }}>{label}</div>
+      <div style={{ fontFamily: 'JetBrains Mono', fontSize: 18, fontWeight: 600, color: 'var(--ink)', marginTop: 3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
         {value}<span style={{ fontSize: 11, marginLeft: 3, color: 'var(--ink-3)', fontFamily: 'Pretendard' }}>{unit}</span>
       </div>
     </div>
@@ -341,28 +341,29 @@ function TrendScreen({ s, L }) {
   }));
 
   return (
-    <div style={{ display: 'grid', gridTemplateRows: 'auto minmax(0, 1fr) 104px', gap: 10, height: '100%', overflow: 'hidden' }}>
-      <div className="card">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+    <div style={{ display: 'grid', gridTemplateRows: '78px minmax(0, 1fr) 92px', gap: 8, height: '100%', overflow: 'hidden' }}>
+      <div className="card" style={{ padding: 10 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'nowrap', overflowX: 'auto', minWidth: 0 }}>
             <div className="title" style={{ marginRight: 6 }}>Signal</div>
             {Object.keys(series).map(k => (
               <button key={k}
                       onClick={() => toggle(k)}
                       style={{
-                        height: 28, padding: '0 12px', borderRadius: 999,
+                        height: 26, padding: '0 10px', borderRadius: 999,
                         border: '1px solid ' + (series[k] ? colorMap[k] : 'var(--line)'),
                         background: series[k] ? colorMap[k] + '15' : '#fff',
                         color: series[k] ? colorMap[k] : 'var(--ink-3)',
-                        fontWeight: 600, fontSize: 11, letterSpacing: '.02em',
+                        fontWeight: 600, fontSize: 10, letterSpacing: '.02em',
                         display: 'inline-flex', alignItems: 'center', gap: 6,
+                        flex: '0 0 auto',
                       }}>
                 <span style={{ width: 8, height: 8, borderRadius: '50%', background: colorMap[k] }}></span>
                 {nameMap[k]}
               </button>
             ))}
           </div>
-          <div className="seg">
+          <div className="seg" style={{ flex: '0 0 auto' }}>
             {['1h', '6h', '24h'].map(r => (
               <button key={r} className={range === r ? 'active' : ''} onClick={() => setRange(r)}>{r}</button>
             ))}
@@ -370,7 +371,7 @@ function TrendScreen({ s, L }) {
         </div>
       </div>
 
-      <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, position: 'relative', padding: 12 }}>
+      <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, position: 'relative', padding: 10 }}>
         <div className="card-h">
           <div className="title">{nameMap.indoorTemp} / Trend</div>
           <button className="btn sm">Export CSV</button>
