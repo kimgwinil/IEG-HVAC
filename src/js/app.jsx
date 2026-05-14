@@ -227,9 +227,9 @@ function SettingsScreenIntegrated({ s, set, L, settings, setSettings }) {
   const lang = settings.lang;
   const isKorea = s.version === 'korea';
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, height: '100%' }}>
-      <div style={{ display: 'grid', gap: 12, alignContent: 'start' }}>
-        <div className="card">
+    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 12, height: '100%', minHeight: 0, overflow: 'hidden' }}>
+      <div style={{ display: 'grid', gridTemplateRows: 'minmax(0, 1fr) auto', gap: 12, minHeight: 0 }}>
+        <div className="card" style={{ minHeight: 0, overflow: 'auto' }}>
           <div className="card-h"><div className="title">{L('l_specs')}</div></div>
           <table className="table">
             <tbody>
@@ -247,7 +247,7 @@ function SettingsScreenIntegrated({ s, set, L, settings, setSettings }) {
           </table>
         </div>
 
-        <div className="card">
+        <div className="card" style={{ padding: 12 }}>
           <div className="card-h"><div className="title">{L('set_about')}</div></div>
           <div style={{ display: 'grid', gap: 8, fontSize: 12, color: 'var(--ink-2)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>System</span><span style={{ fontFamily: 'JetBrains Mono' }}>IEG-HVAC AI Control</span></div>
@@ -259,8 +259,8 @@ function SettingsScreenIntegrated({ s, set, L, settings, setSettings }) {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gap: 12, alignContent: 'start' }}>
-        <div className="card">
+      <div style={{ display: 'grid', gridTemplateRows: 'auto auto minmax(0, 1fr)', gap: 12, minHeight: 0 }}>
+        <div className="card" style={{ padding: 12 }}>
           <div className="card-h"><div className="title">{lang === 'ko' ? '디스플레이' : 'Display'}</div></div>
           <div style={{ display: 'grid', gap: 14 }}>
             <RowK label={L('set_language')}>
@@ -285,7 +285,7 @@ function SettingsScreenIntegrated({ s, set, L, settings, setSettings }) {
           </div>
         </div>
 
-        <div className="card">
+        <div className="card" style={{ padding: 12 }}>
           <div className="card-h"><div className="title">{lang === 'ko' ? '목표값 및 한계' : 'Targets & Limits'}</div></div>
           <div style={{ display: 'grid', gap: 14 }}>
             <SliderRow label={L('a_setpoint')} unit="°C" min={16} max={30}
@@ -297,7 +297,7 @@ function SettingsScreenIntegrated({ s, set, L, settings, setSettings }) {
           </div>
         </div>
 
-        <div className="card">
+        <div className="card" style={{ minHeight: 0, overflow: 'auto', padding: 12 }}>
           <div className="card-h"><div className="title">{L('set_logging')}</div></div>
           <div style={{ display: 'grid', gap: 14 }}>
             <RowK label={lang === 'ko' ? '샘플 간격' : 'Sample interval'}>
@@ -318,7 +318,7 @@ function SettingsScreenIntegrated({ s, set, L, settings, setSettings }) {
 
 function RowK({ label, children }) {
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
       <span style={{ fontSize: 12, color: 'var(--ink-2)', fontWeight: 600 }}>{label}</span>
       {children}
     </div>

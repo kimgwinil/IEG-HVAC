@@ -28,8 +28,8 @@ function AlarmScreen({ s, set, L }) {
   };
 
   return (
-    <div style={{ display: 'grid', gridTemplateRows: 'auto 1fr', gap: 12, height: '100%' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr) auto', gap: 10, alignItems: 'center' }}>
+    <div style={{ display: 'grid', gridTemplateRows: '90px minmax(0, 1fr)', gap: 10, height: '100%', overflow: 'hidden' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr) auto', gap: 10, alignItems: 'center', minHeight: 0 }}>
         <SevCard sev="crit" count={counts.crit} active={filter === 'crit'} onClick={() => setFilter(filter === 'crit' ? 'all' : 'crit')} label="Critical" />
         <SevCard sev="warn" count={counts.warn} active={filter === 'warn'} onClick={() => setFilter(filter === 'warn' ? 'all' : 'warn')} label="Warning" />
         <SevCard sev="info" count={counts.info} active={filter === 'info'} onClick={() => setFilter(filter === 'info' ? 'all' : 'info')} label="Info" />
@@ -132,9 +132,9 @@ function SevCard({ sev, count, active, onClick, label }) {
 function SettingsScreen({ s, set, L, tweaks, setTweak }) {
   const isKorea = s.version === 'korea';
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, height: '100%' }}>
-      <div style={{ display: 'grid', gap: 12, alignContent: 'start' }}>
-        <div className="card">
+    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 12, height: '100%', minHeight: 0 }}>
+      <div style={{ display: 'grid', gridTemplateRows: 'minmax(0, 1fr) auto', gap: 12, minHeight: 0 }}>
+        <div className="card" style={{ minHeight: 0, overflow: 'auto' }}>
           <div className="card-h"><div className="title">{L('l_specs')}</div></div>
           <table className="table">
             <tbody>
@@ -152,7 +152,7 @@ function SettingsScreen({ s, set, L, tweaks, setTweak }) {
           </table>
         </div>
 
-        <div className="card">
+        <div className="card" style={{ padding: 12 }}>
           <div className="card-h"><div className="title">{L('set_about')}</div></div>
           <div style={{ display: 'grid', gap: 8, fontSize: 12, color: 'var(--ink-2)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -174,8 +174,8 @@ function SettingsScreen({ s, set, L, tweaks, setTweak }) {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gap: 12, alignContent: 'start' }}>
-        <div className="card">
+      <div style={{ display: 'grid', gridTemplateRows: 'auto auto minmax(0, 1fr)', gap: 12, minHeight: 0 }}>
+        <div className="card" style={{ padding: 12 }}>
           <div className="card-h"><div className="title">Display</div></div>
           <div style={{ display: 'grid', gap: 14 }}>
             <SettingRow label={L('set_language')}>
@@ -199,7 +199,7 @@ function SettingsScreen({ s, set, L, tweaks, setTweak }) {
           </div>
         </div>
 
-        <div className="card">
+        <div className="card" style={{ padding: 12 }}>
           <div className="card-h"><div className="title">Targets & Limits</div></div>
           <div style={{ display: 'grid', gap: 14 }}>
             <SliderRow label={L('a_setpoint')} unit="°C" min={16} max={30}
@@ -211,7 +211,7 @@ function SettingsScreen({ s, set, L, tweaks, setTweak }) {
           </div>
         </div>
 
-        <div className="card">
+        <div className="card" style={{ minHeight: 0, overflow: 'auto', padding: 12 }}>
           <div className="card-h"><div className="title">{L('set_logging')}</div></div>
           <div style={{ display: 'grid', gap: 14 }}>
             <SettingRow label="Sample interval">

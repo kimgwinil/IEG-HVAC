@@ -163,15 +163,15 @@ function CurriculumScreen({ s, set, L, lang, openLesson }) {
   const totalH = window.CURRICULUM.reduce((a, c) => a + parseInt(c.duration), 0);
 
   return (
-    <div style={{ display: 'grid', gridTemplateRows: 'auto 1fr', gap: 12, height: '100%' }}>
+    <div style={{ display: 'grid', gridTemplateRows: 'auto minmax(0, 1fr)', gap: 10, height: '100%', overflow: 'hidden' }}>
 
       {/* ── Header card ── */}
-      <div className="card" style={{ display: 'grid', gridTemplateColumns: '1fr auto', alignItems: 'center', gap: 12 }}>
+      <div className="card" style={{ display: 'grid', gridTemplateColumns: '1fr auto', alignItems: 'center', gap: 12, padding: 12 }}>
         <div>
           <div style={{ fontSize: 10.5, color: 'var(--ink-4)', fontWeight: 600, letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 2 }}>
             {lang === 'ko' ? '교육 커리큘럼' : 'Training Curriculum'}
           </div>
-          <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--ink)', letterSpacing: '-.3px' }}>
+          <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--ink)', letterSpacing: '-.3px' }}>
             {lang === 'ko' ? '16차수 HVAC 실습 과정' : '16-Session HVAC Practical Course'}
           </div>
           <div style={{ fontSize: 11.5, color: 'var(--ink-3)', marginTop: 3, lineHeight: 1.5 }}>
@@ -202,7 +202,7 @@ function CurriculumScreen({ s, set, L, lang, openLesson }) {
       </div>
 
       {/* ── Session cards grid ── */}
-      <div style={{ overflow: 'auto', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, alignContent: 'start' }}>
+      <div style={{ overflow: 'auto', display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 10, alignContent: 'start', minHeight: 0 }}>
         {filtered.map(c => {
           const cat = COMP_CAT[c.comp] || { color: '#8A93A4', bg: '#F4F6F9', label: { ko: '기타', en: 'Other' } };
           return (
@@ -211,7 +211,7 @@ function CurriculumScreen({ s, set, L, lang, openLesson }) {
                       background: '#fff',
                       border: `1.5px solid ${cat.color}30`,
                       borderTop: `3px solid ${cat.color}`,
-                      borderRadius: 14, padding: '12px 14px', textAlign: 'left',
+                      borderRadius: 14, padding: '10px 12px', textAlign: 'left',
                       display: 'grid', gap: 7,
                       boxShadow: '0 1px 4px rgba(0,0,0,.04)',
                       transition: 'box-shadow .15s, transform .15s',
@@ -281,13 +281,14 @@ function LessonScreen({ s, set, L, lang, lessonN, closeLesson }) {
   const formulas = LESSON_FORMULAS[c.n] || [];
 
   return (
-    <div style={{ display: 'grid', gridTemplateRows: 'auto 1fr', gap: 12, height: '100%' }}>
+    <div style={{ display: 'grid', gridTemplateRows: 'auto minmax(0, 1fr)', gap: 10, height: '100%', overflow: 'hidden' }}>
 
       {/* ── Header ── */}
       <div className="card" style={{
         display: 'grid', gridTemplateColumns: 'auto 1fr auto',
         alignItems: 'center', gap: 14,
         borderTop: `4px solid ${cat.color}`,
+        padding: 12,
       }}>
         <button className="btn ghost" onClick={() => closeLesson(null)} style={{ paddingLeft: 0 }}>
           <Icon name="chev" size={16} style={{ transform: 'rotate(180deg)' }} />
@@ -325,10 +326,10 @@ function LessonScreen({ s, set, L, lang, lessonN, closeLesson }) {
       </div>
 
       {/* ── Body ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.15fr 1fr', gap: 12, minHeight: 0 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr', gap: 10, minHeight: 0 }}>
 
         {/* LEFT: objectives + principle + formulas + procedure */}
-        <div style={{ display: 'grid', gridTemplateRows: 'auto auto 1fr', gap: 10, minHeight: 0, overflow: 'auto' }}>
+        <div style={{ display: 'grid', gridTemplateRows: 'auto auto minmax(0, 1fr)', gap: 10, minHeight: 0, overflow: 'auto' }}>
 
           {/* Objectives — BLUE */}
           <div style={{
@@ -379,7 +380,7 @@ function LessonScreen({ s, set, L, lang, lessonN, closeLesson }) {
         </div>
 
         {/* RIGHT: inputs + live outputs + observation chart */}
-        <div style={{ display: 'grid', gridTemplateRows: 'auto auto 1fr', gap: 10, minHeight: 0 }}>
+        <div style={{ display: 'grid', gridTemplateRows: 'auto auto minmax(0, 1fr)', gap: 10, minHeight: 0 }}>
 
           {/* Inputs — GRAY */}
           <div style={{
@@ -397,7 +398,7 @@ function LessonScreen({ s, set, L, lang, lessonN, closeLesson }) {
           }}>
             <SectionHeader sec={{ ...SEC.obs, label: { ko: '현재 출력값', en: 'Live Outputs' } }}
                            extra={lang === 'ko' ? '실시간' : 'real-time'} />
-            <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(c.outputs.length, 4)}, 1fr)`, gap: 8 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(c.outputs.length, 3)}, minmax(0, 1fr))`, gap: 8 }}>
               {c.outputs.map(k => {
                 const meta = SIGNAL_META[k];
                 const val  = meta?.fmt(s[k] ?? 0);

@@ -36,18 +36,18 @@ function AIScreen({ s, set, L }) {
   if (recs.length < 2) recs.push({ key: 'ai_r3' });
 
   return (
-    <div style={{ display: 'grid', gridTemplateRows: 'auto auto 1fr', gap: 12, height: '100%' }}>
+    <div style={{ display: 'grid', gridTemplateRows: '152px 116px minmax(0, 1fr)', gap: 10, height: '100%', overflow: 'hidden' }}>
       {/* Health summary */}
-      <div className="card" style={{ display: 'grid', gridTemplateColumns: '180px 1fr 1fr', gap: 16, alignItems: 'center' }}>
+      <div className="card" style={{ display: 'grid', gridTemplateColumns: '150px 1fr 1fr', gap: 14, alignItems: 'center', padding: 12, minHeight: 0 }}>
         <div style={{ display: 'grid', placeItems: 'center' }}>
-          <Donut value={score} max={100} color={scoreColor} label={String(score)} sub={L('ai_health')} size={140} />
+          <Donut value={score} max={100} color={scoreColor} label={String(score)} sub={L('ai_health')} size={118} />
         </div>
         <div>
           <div style={{ fontSize: 11, color: 'var(--ink-3)', fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase' }}>
             {L('ai_health')}
           </div>
-          <div style={{ fontSize: 28, fontWeight: 700, marginTop: 4, color: 'var(--ink)' }}>{status}</div>
-          <div style={{ fontSize: 12, color: 'var(--ink-3)', marginTop: 4, lineHeight: 1.5 }}>
+          <div style={{ fontSize: 23, fontWeight: 700, marginTop: 3, color: 'var(--ink)' }}>{status}</div>
+          <div style={{ fontSize: 11.5, color: 'var(--ink-3)', marginTop: 3, lineHeight: 1.4 }}>
             {L('ai_status_normal')}.<br />
             Last full diagnostic cycle: {window.fmtClock(s.clockMin - 7)}
           </div>
@@ -60,9 +60,9 @@ function AIScreen({ s, set, L }) {
       </div>
 
       {/* AI Recommendations */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, minHeight: 0 }}>
         {recs.slice(0, 3).map((r, i) => (
-          <div key={i} className="ai-rec">
+          <div key={i} className="ai-rec" style={{ paddingTop: 10, paddingBottom: 10 }}>
             <div className="ai-ico"><Icon name="ai" size={14} /></div>
             <div className="t">{L(r.key + '_t')}</div>
             <div className="d">{L(r.key + '_d')}</div>
@@ -184,15 +184,15 @@ function EnergyScreen({ s, L }) {
   const week = Array.from({ length: 7 }, (_, i) => 14 + Math.sin(i / 2) * 3 + (i === 6 ? -2 : 0));
 
   return (
-    <div style={{ display: 'grid', gridTemplateRows: 'auto 1fr 1fr', gap: 12, height: '100%' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
-        <StatCard tone="lilac" icon="bolt" label="Today (kWh)" value={total24.toFixed(1)} unit="kWh"
+    <div style={{ display: 'grid', gridTemplateRows: '106px minmax(0, 1fr) minmax(0, 1fr)', gap: 10, height: '100%', overflow: 'hidden' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 9 }}>
+        <StatCard compact tone="lilac" icon="bolt" label="Today (kWh)" value={total24.toFixed(1)} unit="kWh"
                   foot={`vs yesterday`} trend={{ dir: 'down', label: '−6%' }} />
-        <StatCard tone="peach" icon="bolt" label="Today (cost)" value={`₩${(cost / 1000).toFixed(1)}k`} unit=""
+        <StatCard compact tone="peach" icon="bolt" label="Today (cost)" value={`₩${(cost / 1000).toFixed(1)}k`} unit=""
                   foot={`${ratePerKWh}/kWh`} trend={{ dir: 'down', label: '−4%' }} />
-        <StatCard tone="mint" icon="eq" label="Avg EER (24h)" value={(s.eer * 0.95).toFixed(2)} unit=""
+        <StatCard compact tone="mint" icon="eq" label="Avg EER (24h)" value={(s.eer * 0.95).toFixed(2)} unit=""
                   foot="Target ≥ 2.5" trend={{ dir: 'up', label: '+0.12' }} />
-        <StatCard tone="sky" icon="leaf" label="CO₂ saved" value="3.4" unit="kg"
+        <StatCard compact tone="sky" icon="leaf" label="CO₂ saved" value="3.4" unit="kg"
                   foot="vs baseline (eco mode)" trend={{ dir: 'up', label: '+12%' }} />
       </div>
 
@@ -204,10 +204,10 @@ function EnergyScreen({ s, L }) {
           </div>
           <HourlyBars hours={hours} />
         </div>
-        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto auto 1fr', minHeight: 0 }}>
+        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto auto 1fr', minHeight: 0, padding: 12 }}>
           <div className="card-h"><div className="title">Energy Breakdown</div></div>
           <StackedBar segments={breakdown} height={18} />
-          <div style={{ display: 'grid', gap: 8, marginTop: 12, alignContent: 'start' }}>
+          <div style={{ display: 'grid', gap: 7, marginTop: 10, alignContent: 'start', overflow: 'auto' }}>
             {breakdown.map(b => (
               <div key={b.label} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12 }}>
                 <span style={{ width: 9, height: 9, borderRadius: 3, background: b.color }}></span>
@@ -223,14 +223,14 @@ function EnergyScreen({ s, L }) {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, minHeight: 0 }}>
-        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0 }}>
+        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, padding: 12 }}>
           <div className="card-h">
             <div className="title">{L('l_7d')}</div>
             <span style={{ fontSize: 11, color: 'var(--ink-4)', fontFamily: 'JetBrains Mono' }}>Σ {week.reduce((a, b) => a + b, 0).toFixed(0)} kWh</span>
           </div>
           <WeeklyBars data={week} />
         </div>
-        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0 }}>
+        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, padding: 12 }}>
           <div className="card-h"><div className="title">Tariff / Demand</div></div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, alignContent: 'start' }}>
             <MiniMetric label="Peak Today" value="3.4" unit="kW" tone="peach" />
@@ -341,7 +341,7 @@ function TrendScreen({ s, L }) {
   }));
 
   return (
-    <div style={{ display: 'grid', gridTemplateRows: 'auto 1fr auto', gap: 12, height: '100%' }}>
+    <div style={{ display: 'grid', gridTemplateRows: 'auto minmax(0, 1fr) 104px', gap: 10, height: '100%', overflow: 'hidden' }}>
       <div className="card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
@@ -370,7 +370,7 @@ function TrendScreen({ s, L }) {
         </div>
       </div>
 
-      <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, position: 'relative' }}>
+      <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, position: 'relative', padding: 12 }}>
         <div className="card-h">
           <div className="title">{nameMap.indoorTemp} / Trend</div>
           <button className="btn sm">Export CSV</button>
@@ -378,21 +378,21 @@ function TrendScreen({ s, L }) {
         <MultiSeriesChart series={seriesArr} />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 10 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, minmax(0, 1fr))', gap: 8, minHeight: 0 }}>
         {Object.keys(colorMap).map(k => {
           const arr = sliceArr(s.hist[k]);
           const cur = arr[arr.length - 1] ?? 0;
           const first = arr[0] ?? cur;
           const delta = cur - first;
           return (
-            <div key={k} className="card" style={{ padding: 10 }}>
+            <div key={k} className="card" style={{ padding: 8, minWidth: 0 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                 <span style={{ fontSize: 11, color: 'var(--ink-3)', fontWeight: 600 }}>{nameMap[k]}</span>
                 <span style={{ fontSize: 10, color: delta >= 0 ? '#C0364E' : '#1F8A5B', fontFamily: 'JetBrains Mono', fontWeight: 600 }}>
                   {delta >= 0 ? '+' : ''}{delta.toFixed(k === 'co2' ? 0 : 2)}
                 </span>
               </div>
-              <div style={{ fontFamily: 'JetBrains Mono', fontWeight: 600, fontSize: 18, color: 'var(--ink)', marginTop: 4 }}>
+              <div style={{ fontFamily: 'JetBrains Mono', fontWeight: 600, fontSize: 16, color: 'var(--ink)', marginTop: 3 }}>
                 {k === 'co2' ? Math.round(cur) : cur.toFixed(2)}<span style={{ fontSize: 10, color: 'var(--ink-3)', fontFamily: 'Pretendard', marginLeft: 3 }}>{unitMap[k]}</span>
               </div>
               <Spark data={arr} color={colorMap[k]} height={28} padY={3} />
