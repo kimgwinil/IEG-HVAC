@@ -182,9 +182,9 @@ function SchematicScreen({ s, set, L, onPick }) {
   const flow    = s.compressorOn || s.heaterOn;
   const heat    = s.heaterOn || s.fourWayValve === 'heat';
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 244px', gridTemplateRows: 'minmax(0, 1fr) auto', gap: 8, height: '100%', overflow: 'hidden' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 244px', gap: 8, height: '100%', overflow: 'hidden' }}>
       {/* ── SVG schematic ── */}
-      <div className="card" style={{ gridColumn: '1', gridRow: '1', padding: 0, overflow: 'visible', display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0 }}>
+      <div className="card" style={{ padding: 0, overflow: 'visible', display: 'grid', gridTemplateRows: 'auto minmax(0, 1fr) auto', minHeight: 0 }}>
         <div className="card-h" style={{ padding: '6px 10px 0' }}>
           <div>
             <div className="title">{L('nav_schematic')} — {isKorea ? 'KOREA' : 'MALAYSIA'} · {L('mode_' + s.mode).toUpperCase()}</div>
@@ -199,16 +199,15 @@ function SchematicScreen({ s, set, L, onPick }) {
         <div style={{ padding: '0 6px 6px', minHeight: 0 }}>
           <SchematicSVG s={s} isKorea={isKorea} flow={flow} heat={heat} L={L} onPick={onPick} />
         </div>
+
+        <div style={{ padding: '0 6px 6px' }}>
+          <SchematicControlPanel s={s} set={set} L={L} isKorea={isKorea} sections={['accessories']} layout="horizontal" />
+        </div>
       </div>
 
       {/* ── Right: operation + outdoor status ── */}
-      <div style={{ gridColumn: '2', gridRow: '1', minHeight: 0 }}>
+      <div style={{ minHeight: 0 }}>
         <SchematicControlPanel s={s} set={set} L={L} isKorea={isKorea} sections={['control', 'status']} />
-      </div>
-
-      {/* ── Below schematic flow (left column only) ── */}
-      <div style={{ gridColumn: '1', gridRow: '2', minHeight: 0 }}>
-        <SchematicControlPanel s={s} set={set} L={L} isKorea={isKorea} sections={['accessories']} layout="horizontal" />
       </div>
     </div>
   );
