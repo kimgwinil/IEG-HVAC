@@ -181,11 +181,10 @@ function SchematicScreen({ s, set, L, onPick }) {
   const isKorea = s.version === 'korea';
   const flow    = s.compressorOn || s.heaterOn;
   const heat    = s.heaterOn || s.fourWayValve === 'heat';
-  const activeAlarms = s.alarms.filter(a => !a.ack).length;
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 268px', gap: 8, height: '100%', overflow: 'hidden' }}>
       {/* ── SVG schematic ── */}
-      <div className="card" style={{ padding: 0, overflow: 'hidden', display: 'grid', gridTemplateRows: 'auto minmax(0, 1fr) auto', minHeight: 0 }}>
+      <div className="card" style={{ padding: 0, overflow: 'hidden', display: 'grid', gridTemplateRows: 'auto minmax(0, 1fr)', minHeight: 0 }}>
         <div className="card-h" style={{ padding: '6px 10px 0' }}>
           <div>
             <div className="title">{L('nav_schematic')} — {isKorea ? 'KOREA' : 'MALAYSIA'} · {L('mode_' + s.mode).toUpperCase()}</div>
@@ -200,22 +199,18 @@ function SchematicScreen({ s, set, L, onPick }) {
         <div style={{ padding: '0 6px 6px', minHeight: 0 }}>
           <SchematicSVG s={s} isKorea={isKorea} flow={flow} heat={heat} L={L} onPick={onPick} />
         </div>
-
-        <div style={{ padding: '0 6px 6px', minHeight: 0, width: '84%', maxWidth: 860 }}>
-          <SchematicControlPanel s={s} set={set} L={L} isKorea={isKorea} sections={['accessories']} layout="horizontal" compact hardwareControls activeAlarms={activeAlarms} />
-        </div>
       </div>
 
-      {/* ── Right: operation + outdoor status ── */}
+      {/* ── Right: operation + outdoor status + accessories ── */}
       <div style={{ minHeight: 0 }}>
-        <SchematicControlPanel s={s} set={set} L={L} isKorea={isKorea} sections={['control', 'status']} statusLayout="horizontal" />
+        <SchematicControlPanel s={s} set={set} L={L} isKorea={isKorea} sections={['control', 'status', 'accessories']} statusLayout="horizontal" compact />
       </div>
     </div>
   );
 }
 
 // ── SCHEMATIC CONTROL PANEL (right side) ─────────────────────────────────
-function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'status', 'accessories'], layout = 'vertical', statusLayout = 'vertical', compact = false, hardwareControls = false, activeAlarms = 0 }) {
+function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'status', 'accessories'], layout = 'vertical', statusLayout = 'vertical', compact = false }) {
   const compRun = s.compressorOn;
   const T_disc  = compRun ? `${(s.outdoorTemp + 30).toFixed(0)}°C` : '—';
   const T_cond  = compRun ? `${(s.outdoorTemp + 14).toFixed(0)}°C` : '—';
@@ -256,52 +251,12 @@ function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'sta
 
   const accessoriesHorizontal = sections.length === 1 && sections[0] === 'accessories' && layout === 'horizontal';
   const statusHorizontal = sections.includes('status') && statusLayout === 'horizontal';
-  const HardwareChips = () => (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, minmax(0, 1fr))', gap: 6 }}>
-      {[
-        { label: 'POWER', tone: '#1F8A5B', active: s.power, onClick: () => set({ power: !s.power }) },
-        { label: 'RUN', tone: '#9C7B14', active: s.compressorOn || s.heaterOn, onClick: () => {
-          if (!s.power) set({ power: true, mode: 'auto' });
-          else if (s.mode === 'off') set({ mode: 'auto' });
-        }},
-        { label: 'ALARM', tone: '#C0364E', active: activeAlarms > 0, onClick: () => {
-          if (activeAlarms > 0) set({ alarms: s.alarms.map(a => ({ ...a, ack: true })) });
-        }},
-        { label: 'STOP', tone: '#D97757', active: false, onClick: () => set({ power: false, mode: 'off' }) },
-        { label: 'E-STOP', tone: '#B42318', active: false, onClick: () => set({ power: false, mode: 'off', fanSpeed: 0 }) },
-      ].map(item => (
-        <button
-          key={item.label}
-          onClick={item.onClick}
-          style={{
-            display: 'grid',
-            justifyItems: 'center',
-            gap: 4,
-            padding: '6px 4px 5px',
-            borderRadius: 10,
-            border: `1px solid ${item.active ? item.tone : 'var(--line)'}`,
-            background: item.active ? `${item.tone}18` : '#F7F9FB',
-            color: item.active ? item.tone : 'var(--ink-4)',
-          }}
-        >
-          <span style={{
-            width: 10,
-            height: 10,
-            borderRadius: 999,
-            background: item.active ? item.tone : '#CCD3DC',
-            boxShadow: item.active ? `0 0 10px ${item.tone}` : 'none',
-          }} />
-          <span style={{ fontSize: 9, fontFamily: 'JetBrains Mono', fontWeight: 700, letterSpacing: '.08em' }}>{item.label}</span>
-        </button>
-      ))}
-    </div>
-  );
 
   return (
     <div style={{ display: 'grid', gap: 6, alignContent: 'start', overflow: 'auto', height: '100%' }}>
 
       {sections.includes('control') && (
-      <div className="card" style={{ padding: '9px 9px 8px' }}>
+      <div className="card" style={{ padding: compact ? '8px 8px 7px' : '9px 9px 8px' }}>
         <SecHead title="운전 제어" sub="Operation Control" color="#6B5BD2" />
 
         {/* Mode */}
@@ -364,7 +319,7 @@ function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'sta
       )}
 
       {sections.includes('status') && (
-      <div className="card" style={{ padding: '9px 9px 8px' }}>
+      <div className="card" style={{ padding: compact ? '8px 8px 7px' : '9px 9px 8px' }}>
         <SecHead title="실외기 상태" sub="Outdoor Unit — live" color="#D97757" />
 
         <div style={{ display: 'grid', gridTemplateColumns: statusHorizontal ? '1fr 1fr' : '1fr 1fr', gap: 8, marginBottom: 8 }}>
@@ -421,19 +376,10 @@ function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'sta
       )}
 
       {sections.includes('accessories') && (
-      <div className="card" style={{ padding: accessoriesHorizontal ? (compact ? '6px 8px' : '8px 10px') : '9px 9px 8px' }}>
+      <div className="card" style={{ padding: accessoriesHorizontal ? (compact ? '6px 8px' : '8px 10px') : (compact ? '8px 8px 7px' : '9px 9px 8px') }}>
         <SecHead title="부속 장치" sub="Accessories Control" color="#1F8A5B" />
 
         {accessoriesHorizontal ? (
-          <div style={{ display: 'grid', gridTemplateColumns: hardwareControls ? 'minmax(240px, .82fr) minmax(0, 1.18fr)' : '1fr', gap: compact ? 8 : 10, alignItems: 'start' }}>
-            {hardwareControls && (
-              <div style={{ display: 'grid', gap: 6, alignContent: 'start' }}>
-                <div style={{ fontSize: 10.5, color: 'var(--ink-4)', fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase' }}>
-                  Hardware Control
-                </div>
-                <HardwareChips />
-              </div>
-            )}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: compact ? 8 : 10, alignItems: 'start' }}>
             <div style={{ display: 'grid', gap: compact ? 4 : 6 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -490,21 +436,20 @@ function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'sta
                 <div style={{ fontSize: compact ? 10 : 11, color: 'var(--ink-3)', fontFamily: 'JetBrains Mono' }}>{Math.round(s.co2)} ppm</div>
               )}
             </div>
-            </div>
           </div>
         ) : (
           <>
             {/* Humidifier */}
-            <div style={{ marginBottom: 10 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+            <div style={{ marginBottom: compact ? 7 : 10 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: compact ? 4 : 6 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <div style={{ width: 26, height: 26, borderRadius: 7,
+                  <div style={{ width: compact ? 22 : 26, height: compact ? 22 : 26, borderRadius: 7,
                                 background: s.humidifierOn && s.power ? '#DCF1E6' : '#F1F4F8',
                                 color: s.humidifierOn && s.power ? '#1F8A5B' : 'var(--ink-4)',
                                 display: 'grid', placeItems: 'center' }}>
-                    <Icon name="drop" size={14} />
+                    <Icon name="drop" size={compact ? 12 : 14} />
                   </div>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: s.humidifierOn && s.power ? '#1F8A5B' : 'var(--ink-3)' }}>
+                  <span style={{ fontSize: compact ? 10.5 : 12, fontWeight: 700, color: s.humidifierOn && s.power ? '#1F8A5B' : 'var(--ink-3)' }}>
                     {L('c_humid')}
                   </span>
                 </div>
@@ -517,16 +462,16 @@ function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'sta
             </div>
 
             {/* Air purifier */}
-            <div style={{ marginBottom: 10 }}>
+            <div style={{ marginBottom: compact ? 7 : 10 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <div style={{ width: 26, height: 26, borderRadius: 7,
+                  <div style={{ width: compact ? 22 : 26, height: compact ? 22 : 26, borderRadius: 7,
                                 background: s.airPurifierOn && s.power ? '#E8E2F4' : '#F1F4F8',
                                 color: s.airPurifierOn && s.power ? '#6B5BD2' : 'var(--ink-4)',
                                 display: 'grid', placeItems: 'center' }}>
-                    <Icon name="purifier" size={14} />
+                    <Icon name="purifier" size={compact ? 12 : 14} />
                   </div>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: s.airPurifierOn && s.power ? '#6B5BD2' : 'var(--ink-3)' }}>
+                  <span style={{ fontSize: compact ? 10.5 : 12, fontWeight: 700, color: s.airPurifierOn && s.power ? '#6B5BD2' : 'var(--ink-3)' }}>
                     {L('c_purif')} · PM2.5 {s.pm25.toFixed(0)} µg/m³
                   </span>
                 </div>
@@ -536,15 +481,15 @@ function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'sta
 
             {/* Ventilation */}
             <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: s.ventilationOn ? 6 : 0 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: s.ventilationOn ? (compact ? 4 : 6) : 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <div style={{ width: 26, height: 26, borderRadius: 7,
+                  <div style={{ width: compact ? 22 : 26, height: compact ? 22 : 26, borderRadius: 7,
                                 background: s.ventilationOn && s.power ? '#FBE3D5' : '#F1F4F8',
                                 color: s.ventilationOn && s.power ? '#D97757' : 'var(--ink-4)',
                                 display: 'grid', placeItems: 'center' }}>
-                    <Icon name="fan" size={14} />
+                    <Icon name="fan" size={compact ? 12 : 14} />
                   </div>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: s.ventilationOn && s.power ? '#D97757' : 'var(--ink-3)' }}>
+                  <span style={{ fontSize: compact ? 10.5 : 12, fontWeight: 700, color: s.ventilationOn && s.power ? '#D97757' : 'var(--ink-3)' }}>
                     환기 Ventilation · {Math.round(s.co2)} ppm
                   </span>
                 </div>
