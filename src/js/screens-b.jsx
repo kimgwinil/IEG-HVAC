@@ -184,7 +184,7 @@ function EnergyScreen({ s, L }) {
   const week = Array.from({ length: 7 }, (_, i) => 14 + Math.sin(i / 2) * 3 + (i === 6 ? -2 : 0));
 
   return (
-    <div style={{ display: 'grid', gridTemplateRows: '82px 144px 132px', gap: 6, height: '100%', overflow: 'hidden' }}>
+    <div style={{ display: 'grid', gridTemplateRows: '78px 132px 148px', gap: 6, height: '100%', overflow: 'hidden' }}>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 6 }}>
         <StatCard compact tight tone="lilac" icon="bolt" label="Today (kWh)" value={total24.toFixed(1)} unit="kWh"
                   foot={`vs yesterday`} trend={{ dir: 'down', label: '−6%' }} />
@@ -196,7 +196,7 @@ function EnergyScreen({ s, L }) {
                   foot="vs baseline (eco mode)" trend={{ dir: 'up', label: '+12%' }} />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1.55fr 1fr', gap: 8, minHeight: 0 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 8, minHeight: 0 }}>
         <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, padding: 7 }}>
           <div className="card-h">
             <div className="title">{L('l_24h')} · Hourly Consumption</div>
