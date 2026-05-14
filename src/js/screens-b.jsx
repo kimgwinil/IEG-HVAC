@@ -184,7 +184,7 @@ function EnergyScreen({ s, L }) {
   const week = Array.from({ length: 7 }, (_, i) => 14 + Math.sin(i / 2) * 3 + (i === 6 ? -2 : 0));
 
   return (
-    <div style={{ display: 'grid', gridTemplateRows: '88px minmax(0, 1fr) minmax(0, 1fr)', gap: 6, height: '100%', overflow: 'hidden' }}>
+    <div style={{ display: 'grid', gridTemplateRows: '80px minmax(0, 1fr) 168px', gap: 6, height: '100%', overflow: 'hidden' }}>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 7 }}>
         <StatCard compact tone="lilac" icon="bolt" label="Today (kWh)" value={total24.toFixed(1)} unit="kWh"
                   foot={`vs yesterday`} trend={{ dir: 'down', label: '−6%' }} />
@@ -223,16 +223,16 @@ function EnergyScreen({ s, L }) {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, minHeight: 0 }}>
-        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, padding: 10 }}>
+        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, padding: 8 }}>
           <div className="card-h">
             <div className="title">{L('l_7d')}</div>
             <span style={{ fontSize: 11, color: 'var(--ink-4)', fontFamily: 'JetBrains Mono' }}>Σ {week.reduce((a, b) => a + b, 0).toFixed(0)} kWh</span>
           </div>
           <WeeklyBars data={week} />
         </div>
-        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, padding: 10 }}>
+        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, padding: 8 }}>
           <div className="card-h"><div className="title">Tariff / Demand</div></div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 8, alignContent: 'start', overflow: 'auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 6, alignContent: 'start', overflow: 'auto' }}>
             <MiniMetric label="Peak Today" value="3.4" unit="kW" tone="peach" />
             <MiniMetric label="Off-peak %" value="46" unit="%" tone="mint" />
             <MiniMetric label="Avg Demand" value={(s.powerKW * 0.85).toFixed(2)} unit="kW" tone="sky" />
@@ -305,10 +305,10 @@ function MiniMetric({ label, value, unit, tone = 'mint' }) {
   };
   const [bg, fg] = tones[tone];
   return (
-    <div style={{ padding: 8, background: bg, borderRadius: 10, minWidth: 0 }}>
+    <div style={{ padding: 6, background: bg, borderRadius: 9, minWidth: 0 }}>
       <div style={{ fontSize: 9, color: fg, fontWeight: 700, letterSpacing: '.04em', textTransform: 'uppercase' }}>{label}</div>
-      <div style={{ fontFamily: 'JetBrains Mono', fontSize: 18, fontWeight: 600, color: 'var(--ink)', marginTop: 3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-        {value}<span style={{ fontSize: 11, marginLeft: 3, color: 'var(--ink-3)', fontFamily: 'Pretendard' }}>{unit}</span>
+      <div style={{ fontFamily: 'JetBrains Mono', fontSize: 16, fontWeight: 600, color: 'var(--ink)', marginTop: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        {value}<span style={{ fontSize: 10, marginLeft: 2, color: 'var(--ink-3)', fontFamily: 'Pretendard' }}>{unit}</span>
       </div>
     </div>
   );
