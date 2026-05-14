@@ -249,25 +249,25 @@ function EnergyScreen({ s, L }) {
 function HourlyBars({ hours }) {
   const max = Math.max(...hours);
   return (
-    <svg viewBox="0 0 800 200" preserveAspectRatio="none" style={{ width: '100%', height: '100%' }}>
+    <svg viewBox="0 0 800 176" preserveAspectRatio="none" style={{ width: '100%', height: '100%' }}>
       {hours.map((v, i) => {
         const x = 32 + i * 30;
-        const h = (v / max) * 140;
-        const y = 170 - h;
+        const h = (v / max) * 122;
+        const y = 150 - h;
         const isPeak = (i >= 13 && i <= 17);
         return (
           <g key={i}>
             <rect x={x} y={y} width="20" height={h} rx="3"
                   fill={isPeak ? '#D97757' : '#2A6FDB'} opacity={0.85} />
             {i % 3 === 0 && (
-              <text x={x + 10} y={188} fontSize="9" textAnchor="middle" fill="#8A93A4" fontFamily="JetBrains Mono">
+              <text x={x + 10} y={168} fontSize="9" textAnchor="middle" fill="#8A93A4" fontFamily="JetBrains Mono">
                 {String(i).padStart(2, '0')}
               </text>
             )}
           </g>
         );
       })}
-      <line x1="0" y1="170" x2="800" y2="170" stroke="#E7EBF0" />
+      <line x1="0" y1="150" x2="800" y2="150" stroke="#E7EBF0" />
     </svg>
   );
 }
@@ -276,17 +276,17 @@ function WeeklyBars({ data }) {
   const max = Math.max(...data);
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   return (
-    <svg viewBox="0 0 400 200" preserveAspectRatio="none" style={{ width: '100%', height: '100%' }}>
+    <svg viewBox="0 0 400 176" preserveAspectRatio="none" style={{ width: '100%', height: '100%' }}>
       {data.map((v, i) => {
         const w = 36;
         const x = 18 + i * 53;
-        const h = (v / max) * 140;
-        const y = 170 - h;
+        const h = (v / max) * 122;
+        const y = 150 - h;
         return (
           <g key={i}>
             <rect x={x} y={y} width={w} height={h} rx="6" fill="#14B8A6" opacity="0.85" />
             <text x={x + w / 2} y={y - 4} fontSize="10" textAnchor="middle" fill="#0F1A2E" fontFamily="JetBrains Mono" fontWeight="600">{v.toFixed(0)}</text>
-            <text x={x + w / 2} y={188} fontSize="10" textAnchor="middle" fill="#8A93A4">{days[i]}</text>
+            <text x={x + w / 2} y={168} fontSize="10" textAnchor="middle" fill="#8A93A4">{days[i]}</text>
           </g>
         );
       })}
@@ -411,8 +411,8 @@ function MultiSeriesChart({ series }) {
       Select a signal above to display.
     </div>
   );
-  const w = 1100, h = 380;
-  const padL = 44, padR = 44, padT = 14, padB = 26;
+  const w = 1100, h = 320;
+  const padL = 40, padR = 40, padT = 12, padB = 22;
   const plotW = w - padL - padR, plotH = h - padT - padB;
   // each series has independent normalization
   const len = Math.max(...series.map(s => s.data.length));

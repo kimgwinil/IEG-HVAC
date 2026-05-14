@@ -517,7 +517,7 @@ function SchematicSVG({ s, isKorea, flow, heat, L, onPick }) {
   };
 
   return (
-    <svg className="schem-svg" viewBox="-12 -12 944 484" preserveAspectRatio="xMidYMid meet">
+    <svg className="schem-svg" viewBox="-12 -12 944 484" preserveAspectRatio="xMidYMin meet">
       <style>{`
         @keyframes fanSpin { to { transform: rotate(360deg); } }
         @keyframes flowDash { to { stroke-dashoffset: -24; } }
