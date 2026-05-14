@@ -182,33 +182,40 @@ function SchematicScreen({ s, set, L, onPick }) {
   const flow    = s.compressorOn || s.heaterOn;
   const heat    = s.heaterOn || s.fourWayValve === 'heat';
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 244px', gap: 8, height: '100%', overflow: 'hidden' }}>
-      {/* ── SVG schematic ── */}
-      <div className="card" style={{ padding: 0, overflow: 'visible', display: 'grid', gridTemplateRows: 'auto 1fr' }}>
-        <div className="card-h" style={{ padding: '6px 10px 0' }}>
-          <div>
-            <div className="title">{L('nav_schematic')} — {isKorea ? 'KOREA' : 'MALAYSIA'} · {L('mode_' + s.mode).toUpperCase()}</div>
-            <div style={{ fontSize: 10, color: 'var(--ink-4)', marginTop: 2 }}>Click any component to view its principle</div>
+    <div style={{ display: 'grid', gridTemplateRows: 'minmax(0, 1fr) auto', gap: 8, height: '100%', overflow: 'hidden' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 244px', gap: 8, minHeight: 0 }}>
+        {/* ── SVG schematic ── */}
+        <div className="card" style={{ padding: 0, overflow: 'visible', display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0 }}>
+          <div className="card-h" style={{ padding: '6px 10px 0' }}>
+            <div>
+              <div className="title">{L('nav_schematic')} — {isKorea ? 'KOREA' : 'MALAYSIA'} · {L('mode_' + s.mode).toUpperCase()}</div>
+              <div style={{ fontSize: 10, color: 'var(--ink-4)', marginTop: 2 }}>Click any component to view its principle</div>
+            </div>
+            <div style={{ display: 'flex', gap: 6, fontSize: 9.5 }}>
+              <Legend dot="#D97757" label="Hot gas / High-P" />
+              <Legend dot="#2A6FDB" label="Liquid / Low-P" />
+              <Legend dot="#1F8A5B" label="Air flow" />
+            </div>
           </div>
-          <div style={{ display: 'flex', gap: 6, fontSize: 9.5 }}>
-            <Legend dot="#D97757" label="Hot gas / High-P" />
-            <Legend dot="#2A6FDB" label="Liquid / Low-P" />
-            <Legend dot="#1F8A5B" label="Air flow" />
+          <div style={{ padding: '0 6px 6px', minHeight: 0 }}>
+            <SchematicSVG s={s} isKorea={isKorea} flow={flow} heat={heat} L={L} onPick={onPick} />
           </div>
         </div>
-        <div style={{ padding: '0 6px 6px', minHeight: 0 }}>
-          <SchematicSVG s={s} isKorea={isKorea} flow={flow} heat={heat} L={L} onPick={onPick} />
-        </div>
+
+        {/* ── Right: operation panel only ── */}
+        <SchematicControlPanel s={s} set={set} L={L} isKorea={isKorea} sections={['control']} />
       </div>
 
-      {/* ── Right: interactive control panel ── */}
-      <SchematicControlPanel s={s} set={set} L={L} isKorea={isKorea} />
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+        <SchematicControlPanel s={s} set={set} L={L} isKorea={isKorea} sections={['status']} />
+        <SchematicControlPanel s={s} set={set} L={L} isKorea={isKorea} sections={['accessories']} />
+      </div>
     </div>
   );
 }
 
 // ── SCHEMATIC CONTROL PANEL (right side) ─────────────────────────────────
-function SchematicControlPanel({ s, set, L, isKorea }) {
+function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'status', 'accessories'] }) {
   const compRun = s.compressorOn;
   const T_disc  = compRun ? `${(s.outdoorTemp + 30).toFixed(0)}°C` : '—';
   const T_cond  = compRun ? `${(s.outdoorTemp + 14).toFixed(0)}°C` : '—';
@@ -250,7 +257,7 @@ function SchematicControlPanel({ s, set, L, isKorea }) {
   return (
     <div style={{ display: 'grid', gap: 6, alignContent: 'start', overflow: 'auto', height: '100%' }}>
 
-      {/* ── 운전 제어 ── */}
+      {sections.includes('control') && (
       <div className="card" style={{ padding: '9px 9px 8px' }}>
         <SecHead title="운전 제어" sub="Operation Control" color="#6B5BD2" />
 
@@ -311,8 +318,9 @@ function SchematicControlPanel({ s, set, L, isKorea }) {
           </div>
         </div>
       </div>
+      )}
 
-      {/* ── 실외기 상태 ── */}
+      {sections.includes('status') && (
       <div className="card" style={{ padding: '9px 9px 8px' }}>
         <SecHead title="실외기 상태" sub="Outdoor Unit — live" color="#D97757" />
 
@@ -349,8 +357,9 @@ function SchematicControlPanel({ s, set, L, isKorea }) {
         <LiveRow label="과냉각도 SC"         value={sc}     color={compRun ? '#6B5BD2' : 'var(--ink-4)'} />
         <LiveRow label="증발 온도 T_evap"    value={T_evap} color={compRun ? '#2A6FDB' : 'var(--ink-4)'} />
       </div>
+      )}
 
-      {/* ── 부속 장치 제어 ── */}
+      {sections.includes('accessories') && (
       <div className="card" style={{ padding: '9px 9px 8px' }}>
         <SecHead title="부속 장치" sub="Accessories Control" color="#1F8A5B" />
 
@@ -416,6 +425,7 @@ function SchematicControlPanel({ s, set, L, isKorea }) {
           )}
         </div>
       </div>
+      )}
     </div>
   );
 }
