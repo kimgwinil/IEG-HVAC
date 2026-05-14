@@ -345,7 +345,11 @@ function Stage({ children }) {
     const fit = () => {
       const w = window.innerWidth, h = window.innerHeight;
       const sc = Math.min(w / STAGE_W, h / STAGE_H);
-      if (wrapRef.current) wrapRef.current.style.transform = `scale(${sc})`;
+      const tx = (w - STAGE_W * sc) / 2;
+      const ty = (h - STAGE_H * sc) / 2;
+      if (wrapRef.current) {
+        wrapRef.current.style.transform = `translate(${tx}px, ${ty}px) scale(${sc})`;
+      }
     };
     fit();
     window.addEventListener('resize', fit);
