@@ -201,22 +201,21 @@ function SchematicScreen({ s, set, L, onPick }) {
         </div>
       </div>
 
-      {/* ── Right: operation panel only ── */}
+      {/* ── Right: operation + outdoor status ── */}
       <div style={{ gridColumn: '2', gridRow: '1', minHeight: 0 }}>
-        <SchematicControlPanel s={s} set={set} L={L} isKorea={isKorea} sections={['control']} />
+        <SchematicControlPanel s={s} set={set} L={L} isKorea={isKorea} sections={['control', 'status']} />
       </div>
 
       {/* ── Below schematic flow (left column only) ── */}
-      <div style={{ gridColumn: '1', gridRow: '2', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-        <SchematicControlPanel s={s} set={set} L={L} isKorea={isKorea} sections={['status']} />
-        <SchematicControlPanel s={s} set={set} L={L} isKorea={isKorea} sections={['accessories']} />
+      <div style={{ gridColumn: '1', gridRow: '2', minHeight: 0 }}>
+        <SchematicControlPanel s={s} set={set} L={L} isKorea={isKorea} sections={['accessories']} layout="horizontal" />
       </div>
     </div>
   );
 }
 
 // ── SCHEMATIC CONTROL PANEL (right side) ─────────────────────────────────
-function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'status', 'accessories'] }) {
+function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'status', 'accessories'], layout = 'vertical' }) {
   const compRun = s.compressorOn;
   const T_disc  = compRun ? `${(s.outdoorTemp + 30).toFixed(0)}°C` : '—';
   const T_cond  = compRun ? `${(s.outdoorTemp + 14).toFixed(0)}°C` : '—';
@@ -254,6 +253,8 @@ function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'sta
               boxShadow: s.fanSpeed === lv ? `0 0 0 2px #D6BB5540` : 'none',
             }}>{lv}</button>
   );
+
+  const accessoriesHorizontal = sections.length === 1 && sections[0] === 'accessories' && layout === 'horizontal';
 
   return (
     <div style={{ display: 'grid', gap: 6, alignContent: 'start', overflow: 'auto', height: '100%' }}>
@@ -361,70 +362,132 @@ function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'sta
       )}
 
       {sections.includes('accessories') && (
-      <div className="card" style={{ padding: '9px 9px 8px' }}>
+      <div className="card" style={{ padding: accessoriesHorizontal ? '8px 10px' : '9px 9px 8px' }}>
         <SecHead title="부속 장치" sub="Accessories Control" color="#1F8A5B" />
 
-        {/* Humidifier */}
-        <div style={{ marginBottom: 10 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ width: 26, height: 26, borderRadius: 7,
-                            background: s.humidifierOn && s.power ? '#DCF1E6' : '#F1F4F8',
-                            color: s.humidifierOn && s.power ? '#1F8A5B' : 'var(--ink-4)',
-                            display: 'grid', placeItems: 'center' }}>
-                <Icon name="drop" size={14} />
+        {accessoriesHorizontal ? (
+          <div style={{ display: 'grid', gridTemplateColumns: '1.05fr 1.05fr 1.2fr', gap: 10, alignItems: 'start' }}>
+            <div style={{ display: 'grid', gap: 6 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div style={{ width: 24, height: 24, borderRadius: 7,
+                                background: s.humidifierOn && s.power ? '#DCF1E6' : '#F1F4F8',
+                                color: s.humidifierOn && s.power ? '#1F8A5B' : 'var(--ink-4)',
+                                display: 'grid', placeItems: 'center' }}>
+                    <Icon name="drop" size={13} />
+                  </div>
+                  <span style={{ fontSize: 11.5, fontWeight: 700, color: s.humidifierOn && s.power ? '#1F8A5B' : 'var(--ink-3)' }}>{L('c_humid')}</span>
+                </div>
+                <Toggle on={s.humidifierOn} onChange={v => set({ humidifierOn: v })} />
               </div>
-              <span style={{ fontSize: 12, fontWeight: 700, color: s.humidifierOn && s.power ? '#1F8A5B' : 'var(--ink-3)' }}>
-                {L('c_humid')}
-              </span>
+              {s.humidifierOn && s.power && (
+                <SliderRow label={`RH ${s.targetRH}%`} unit="%" min={30} max={70} step={5}
+                           value={s.targetRH} onChange={v => set({ targetRH: v })} />
+              )}
             </div>
-            <Toggle on={s.humidifierOn} onChange={v => set({ humidifierOn: v })} />
-          </div>
-          {s.humidifierOn && s.power && (
-            <SliderRow label={`RH 목표 ${s.targetRH}%`} unit="%" min={30} max={70} step={5}
-                       value={s.targetRH} onChange={v => set({ targetRH: v })} />
-          )}
-        </div>
 
-        {/* Air purifier */}
-        <div style={{ marginBottom: 10 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ width: 26, height: 26, borderRadius: 7,
-                            background: s.airPurifierOn && s.power ? '#E8E2F4' : '#F1F4F8',
-                            color: s.airPurifierOn && s.power ? '#6B5BD2' : 'var(--ink-4)',
-                            display: 'grid', placeItems: 'center' }}>
-                <Icon name="purifier" size={14} />
+            <div style={{ display: 'grid', gap: 6 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div style={{ width: 24, height: 24, borderRadius: 7,
+                                background: s.airPurifierOn && s.power ? '#E8E2F4' : '#F1F4F8',
+                                color: s.airPurifierOn && s.power ? '#6B5BD2' : 'var(--ink-4)',
+                                display: 'grid', placeItems: 'center' }}>
+                    <Icon name="purifier" size={13} />
+                  </div>
+                  <span style={{ fontSize: 11.5, fontWeight: 700, color: s.airPurifierOn && s.power ? '#6B5BD2' : 'var(--ink-3)' }}>{L('c_purif')}</span>
+                </div>
+                <Toggle on={s.airPurifierOn} onChange={v => set({ airPurifierOn: v })} />
               </div>
-              <span style={{ fontSize: 12, fontWeight: 700, color: s.airPurifierOn && s.power ? '#6B5BD2' : 'var(--ink-3)' }}>
-                {L('c_purif')} · PM2.5 {s.pm25.toFixed(0)} µg/m³
-              </span>
+              <div style={{ fontSize: 11, color: 'var(--ink-3)', fontFamily: 'JetBrains Mono' }}>PM2.5 {s.pm25.toFixed(0)} µg/m³</div>
             </div>
-            <Toggle on={s.airPurifierOn} onChange={v => set({ airPurifierOn: v })} />
-          </div>
-        </div>
 
-        {/* Ventilation */}
-        <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: s.ventilationOn ? 6 : 0 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ width: 26, height: 26, borderRadius: 7,
-                            background: s.ventilationOn && s.power ? '#FBE3D5' : '#F1F4F8',
-                            color: s.ventilationOn && s.power ? '#D97757' : 'var(--ink-4)',
-                            display: 'grid', placeItems: 'center' }}>
-                <Icon name="fan" size={14} />
+            <div style={{ display: 'grid', gap: 6 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div style={{ width: 24, height: 24, borderRadius: 7,
+                                background: s.ventilationOn && s.power ? '#FBE3D5' : '#F1F4F8',
+                                color: s.ventilationOn && s.power ? '#D97757' : 'var(--ink-4)',
+                                display: 'grid', placeItems: 'center' }}>
+                    <Icon name="fan" size={13} />
+                  </div>
+                  <span style={{ fontSize: 11.5, fontWeight: 700, color: s.ventilationOn && s.power ? '#D97757' : 'var(--ink-3)' }}>Ventilation</span>
+                </div>
+                <Toggle on={s.ventilationOn} onChange={v => set({ ventilationOn: v })} />
               </div>
-              <span style={{ fontSize: 12, fontWeight: 700, color: s.ventilationOn && s.power ? '#D97757' : 'var(--ink-3)' }}>
-                환기 Ventilation · {Math.round(s.co2)} ppm
-              </span>
+              {s.ventilationOn && s.power ? (
+                <SliderRow label={`CO₂ ${s.targetCO2} ppm`} unit="ppm" min={600} max={1500} step={50}
+                           value={s.targetCO2} onChange={v => set({ targetCO2: v })} />
+              ) : (
+                <div style={{ fontSize: 11, color: 'var(--ink-3)', fontFamily: 'JetBrains Mono' }}>{Math.round(s.co2)} ppm</div>
+              )}
             </div>
-            <Toggle on={s.ventilationOn} onChange={v => set({ ventilationOn: v })} />
           </div>
-          {s.ventilationOn && s.power && (
-            <SliderRow label={`CO₂ 한계 ${s.targetCO2} ppm`} unit="ppm" min={600} max={1500} step={50}
-                       value={s.targetCO2} onChange={v => set({ targetCO2: v })} />
-          )}
-        </div>
+        ) : (
+          <>
+            {/* Humidifier */}
+            <div style={{ marginBottom: 10 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div style={{ width: 26, height: 26, borderRadius: 7,
+                                background: s.humidifierOn && s.power ? '#DCF1E6' : '#F1F4F8',
+                                color: s.humidifierOn && s.power ? '#1F8A5B' : 'var(--ink-4)',
+                                display: 'grid', placeItems: 'center' }}>
+                    <Icon name="drop" size={14} />
+                  </div>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: s.humidifierOn && s.power ? '#1F8A5B' : 'var(--ink-3)' }}>
+                    {L('c_humid')}
+                  </span>
+                </div>
+                <Toggle on={s.humidifierOn} onChange={v => set({ humidifierOn: v })} />
+              </div>
+              {s.humidifierOn && s.power && (
+                <SliderRow label={`RH 목표 ${s.targetRH}%`} unit="%" min={30} max={70} step={5}
+                           value={s.targetRH} onChange={v => set({ targetRH: v })} />
+              )}
+            </div>
+
+            {/* Air purifier */}
+            <div style={{ marginBottom: 10 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div style={{ width: 26, height: 26, borderRadius: 7,
+                                background: s.airPurifierOn && s.power ? '#E8E2F4' : '#F1F4F8',
+                                color: s.airPurifierOn && s.power ? '#6B5BD2' : 'var(--ink-4)',
+                                display: 'grid', placeItems: 'center' }}>
+                    <Icon name="purifier" size={14} />
+                  </div>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: s.airPurifierOn && s.power ? '#6B5BD2' : 'var(--ink-3)' }}>
+                    {L('c_purif')} · PM2.5 {s.pm25.toFixed(0)} µg/m³
+                  </span>
+                </div>
+                <Toggle on={s.airPurifierOn} onChange={v => set({ airPurifierOn: v })} />
+              </div>
+            </div>
+
+            {/* Ventilation */}
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: s.ventilationOn ? 6 : 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div style={{ width: 26, height: 26, borderRadius: 7,
+                                background: s.ventilationOn && s.power ? '#FBE3D5' : '#F1F4F8',
+                                color: s.ventilationOn && s.power ? '#D97757' : 'var(--ink-4)',
+                                display: 'grid', placeItems: 'center' }}>
+                    <Icon name="fan" size={14} />
+                  </div>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: s.ventilationOn && s.power ? '#D97757' : 'var(--ink-3)' }}>
+                    환기 Ventilation · {Math.round(s.co2)} ppm
+                  </span>
+                </div>
+                <Toggle on={s.ventilationOn} onChange={v => set({ ventilationOn: v })} />
+              </div>
+              {s.ventilationOn && s.power && (
+                <SliderRow label={`CO₂ 한계 ${s.targetCO2} ppm`} unit="ppm" min={600} max={1500} step={50}
+                           value={s.targetCO2} onChange={v => set({ targetCO2: v })} />
+              )}
+            </div>
+          </>
+        )}
       </div>
       )}
     </div>
