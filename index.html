@@ -3041,8 +3041,8 @@ function EnergyScreen({ s, L }) {
   const week = Array.from({ length: 7 }, (_, i) => 14 + Math.sin(i / 2) * 3 + (i === 6 ? -2 : 0));
 
   return (
-    <div style={{ display: 'grid', gridTemplateRows: '78px 132px 148px', gap: 6, height: '100%', overflow: 'hidden' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 6 }}>
+    <div style={{ display: 'grid', gridTemplateRows: '72px 120px 176px', gap: 6, height: '100%', overflow: 'hidden' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 5 }}>
         <StatCard compact tight tone="lilac" icon="bolt" label="Today (kWh)" value={total24.toFixed(1)} unit="kWh"
                   foot={`vs yesterday`} trend={{ dir: 'down', label: '−6%' }} />
         <StatCard compact tight tone="peach" icon="bolt" label="Today (cost)" value={`₩${(cost / 1000).toFixed(1)}k`} unit=""
@@ -3053,24 +3053,24 @@ function EnergyScreen({ s, L }) {
                   foot="vs baseline (eco mode)" trend={{ dir: 'up', label: '+12%' }} />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 8, minHeight: 0 }}>
-        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, padding: 7 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1.45fr 1fr', gap: 8, minHeight: 0 }}>
+        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0, padding: 6 }}>
           <div className="card-h">
             <div className="title">{L('l_24h')} · Hourly Consumption</div>
             <span style={{ fontSize: 11, color: 'var(--ink-4)' }}>kWh</span>
           </div>
           <HourlyBars hours={hours} />
         </div>
-        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto auto 1fr', minHeight: 0, padding: 7 }}>
+        <div className="card" style={{ display: 'grid', gridTemplateRows: 'auto auto 1fr', minHeight: 0, padding: 6 }}>
           <div className="card-h"><div className="title">Energy Breakdown</div></div>
           <StackedBar segments={breakdown} height={10} />
-          <div style={{ display: 'grid', gap: 3, marginTop: 5, alignContent: 'start', overflow: 'auto' }}>
+          <div style={{ display: 'grid', gap: 2, marginTop: 4, alignContent: 'start', overflow: 'auto' }}>
             {breakdown.map(b => (
-              <div key={b.label} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 10.5 }}>
+              <div key={b.label} style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 10 }}>
                 <span style={{ width: 7, height: 7, borderRadius: 3, background: b.color }}></span>
                 <span style={{ flex: 1, color: 'var(--ink-2)', minWidth: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{b.label}</span>
-                <span style={{ fontFamily: 'JetBrains Mono', color: 'var(--ink)', fontWeight: 600, fontSize: 10 }}>{b.value.toFixed(1)}</span>
-                <span style={{ color: 'var(--ink-4)', fontSize: 9.5, width: 28, textAlign: 'right', fontFamily: 'JetBrains Mono' }}>
+                <span style={{ fontFamily: 'JetBrains Mono', color: 'var(--ink)', fontWeight: 600, fontSize: 9.5 }}>{b.value.toFixed(1)}</span>
+                <span style={{ color: 'var(--ink-4)', fontSize: 9, width: 26, textAlign: 'right', fontFamily: 'JetBrains Mono' }}>
                   {(b.value / total24 * 100).toFixed(0)}%
                 </span>
               </div>
