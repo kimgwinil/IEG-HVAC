@@ -201,11 +201,8 @@ function SchematicScreen({ s, set, L, onPick }) {
           <SchematicSVG s={s} isKorea={isKorea} flow={flow} heat={heat} L={L} onPick={onPick} />
         </div>
 
-        <div style={{ padding: '0 6px 6px', minHeight: 0 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(260px, .72fr) minmax(380px, 1.08fr)', gap: 8, width: '84%', maxWidth: 860 }}>
-            <SchematicQuickControls s={s} set={set} activeAlarms={activeAlarms} />
-            <SchematicControlPanel s={s} set={set} L={L} isKorea={isKorea} sections={['accessories']} layout="horizontal" compact />
-          </div>
+        <div style={{ padding: '0 6px 6px', minHeight: 0, width: '84%', maxWidth: 860 }}>
+          <SchematicControlPanel s={s} set={set} L={L} isKorea={isKorea} sections={['accessories']} layout="horizontal" compact hardwareControls activeAlarms={activeAlarms} />
         </div>
       </div>
 
@@ -218,54 +215,7 @@ function SchematicScreen({ s, set, L, onPick }) {
 }
 
 // ── SCHEMATIC CONTROL PANEL (right side) ─────────────────────────────────
-function SchematicQuickControls({ s, set, activeAlarms }) {
-  const Chip = ({ label, tone = '#8A93A4', active = false, onClick }) => (
-    <button
-      onClick={onClick}
-      style={{
-        display: 'grid',
-        justifyItems: 'center',
-        gap: 4,
-        padding: '6px 4px 5px',
-        borderRadius: 10,
-        border: `1px solid ${active ? tone : 'var(--line)'}`,
-        background: active ? `${tone}18` : '#F7F9FB',
-        color: active ? tone : 'var(--ink-4)',
-      }}
-    >
-      <span style={{
-        width: 10,
-        height: 10,
-        borderRadius: 999,
-        background: active ? tone : '#CCD3DC',
-        boxShadow: active ? `0 0 10px ${tone}` : 'none',
-      }} />
-      <span style={{ fontSize: 9, fontFamily: 'JetBrains Mono', fontWeight: 700, letterSpacing: '.08em' }}>{label}</span>
-    </button>
-  );
-
-  return (
-    <div className="card" style={{ padding: '8px 9px' }}>
-      <div style={{ fontSize: 10.5, color: 'var(--ink-4)', fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 6 }}>
-        Hardware Control
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, minmax(0, 1fr))', gap: 6 }}>
-        <Chip label="POWER" tone="#1F8A5B" active={s.power} onClick={() => set({ power: !s.power })} />
-        <Chip label="RUN" tone="#9C7B14" active={s.compressorOn || s.heaterOn} onClick={() => {
-          if (!s.power) set({ power: true, mode: 'auto' });
-          else if (s.mode === 'off') set({ mode: 'auto' });
-        }} />
-        <Chip label="ALARM" tone="#C0364E" active={activeAlarms > 0} onClick={() => {
-          if (activeAlarms > 0) set({ alarms: s.alarms.map(a => ({ ...a, ack: true })) });
-        }} />
-        <Chip label="STOP" tone="#D97757" onClick={() => set({ power: false, mode: 'off' })} />
-        <Chip label="E-STOP" tone="#B42318" onClick={() => set({ power: false, mode: 'off', fanSpeed: 0 })} />
-      </div>
-    </div>
-  );
-}
-
-function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'status', 'accessories'], layout = 'vertical', statusLayout = 'vertical', compact = false }) {
+function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'status', 'accessories'], layout = 'vertical', statusLayout = 'vertical', compact = false, hardwareControls = false, activeAlarms = 0 }) {
   const compRun = s.compressorOn;
   const T_disc  = compRun ? `${(s.outdoorTemp + 30).toFixed(0)}°C` : '—';
   const T_cond  = compRun ? `${(s.outdoorTemp + 14).toFixed(0)}°C` : '—';
@@ -306,6 +256,46 @@ function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'sta
 
   const accessoriesHorizontal = sections.length === 1 && sections[0] === 'accessories' && layout === 'horizontal';
   const statusHorizontal = sections.includes('status') && statusLayout === 'horizontal';
+  const HardwareChips = () => (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, minmax(0, 1fr))', gap: 6 }}>
+      {[
+        { label: 'POWER', tone: '#1F8A5B', active: s.power, onClick: () => set({ power: !s.power }) },
+        { label: 'RUN', tone: '#9C7B14', active: s.compressorOn || s.heaterOn, onClick: () => {
+          if (!s.power) set({ power: true, mode: 'auto' });
+          else if (s.mode === 'off') set({ mode: 'auto' });
+        }},
+        { label: 'ALARM', tone: '#C0364E', active: activeAlarms > 0, onClick: () => {
+          if (activeAlarms > 0) set({ alarms: s.alarms.map(a => ({ ...a, ack: true })) });
+        }},
+        { label: 'STOP', tone: '#D97757', active: false, onClick: () => set({ power: false, mode: 'off' }) },
+        { label: 'E-STOP', tone: '#B42318', active: false, onClick: () => set({ power: false, mode: 'off', fanSpeed: 0 }) },
+      ].map(item => (
+        <button
+          key={item.label}
+          onClick={item.onClick}
+          style={{
+            display: 'grid',
+            justifyItems: 'center',
+            gap: 4,
+            padding: '6px 4px 5px',
+            borderRadius: 10,
+            border: `1px solid ${item.active ? item.tone : 'var(--line)'}`,
+            background: item.active ? `${item.tone}18` : '#F7F9FB',
+            color: item.active ? item.tone : 'var(--ink-4)',
+          }}
+        >
+          <span style={{
+            width: 10,
+            height: 10,
+            borderRadius: 999,
+            background: item.active ? item.tone : '#CCD3DC',
+            boxShadow: item.active ? `0 0 10px ${item.tone}` : 'none',
+          }} />
+          <span style={{ fontSize: 9, fontFamily: 'JetBrains Mono', fontWeight: 700, letterSpacing: '.08em' }}>{item.label}</span>
+        </button>
+      ))}
+    </div>
+  );
 
   return (
     <div style={{ display: 'grid', gap: 6, alignContent: 'start', overflow: 'auto', height: '100%' }}>
@@ -435,7 +425,16 @@ function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'sta
         <SecHead title="부속 장치" sub="Accessories Control" color="#1F8A5B" />
 
         {accessoriesHorizontal ? (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: compact ? 8 : 10, alignItems: 'start' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: hardwareControls ? 'minmax(240px, .82fr) minmax(0, 1.18fr)' : '1fr', gap: compact ? 8 : 10, alignItems: 'start' }}>
+            {hardwareControls && (
+              <div style={{ display: 'grid', gap: 6, alignContent: 'start' }}>
+                <div style={{ fontSize: 10.5, color: 'var(--ink-4)', fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase' }}>
+                  Hardware Control
+                </div>
+                <HardwareChips />
+              </div>
+            )}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: compact ? 8 : 10, alignItems: 'start' }}>
             <div style={{ display: 'grid', gap: compact ? 4 : 6 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -490,6 +489,7 @@ function SchematicControlPanel({ s, set, L, isKorea, sections = ['control', 'sta
               ) : (
                 <div style={{ fontSize: compact ? 10 : 11, color: 'var(--ink-3)', fontFamily: 'JetBrains Mono' }}>{Math.round(s.co2)} ppm</div>
               )}
+            </div>
             </div>
           </div>
         ) : (
