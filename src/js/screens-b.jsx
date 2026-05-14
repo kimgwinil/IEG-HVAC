@@ -184,7 +184,7 @@ function EnergyScreen({ s, L }) {
   const week = Array.from({ length: 7 }, (_, i) => 14 + Math.sin(i / 2) * 3 + (i === 6 ? -2 : 0));
 
   return (
-    <div style={{ display: 'grid', gridTemplateRows: '80px minmax(0, 1fr) 168px', gap: 6, height: '100%', overflow: 'hidden' }}>
+    <div style={{ display: 'grid', gridTemplateRows: '106px minmax(0, 1fr) 168px', gap: 6, height: '100%', overflow: 'hidden' }}>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 7 }}>
         <StatCard compact tone="lilac" icon="bolt" label="Today (kWh)" value={total24.toFixed(1)} unit="kWh"
                   foot={`vs yesterday`} trend={{ dir: 'down', label: '−6%' }} />
