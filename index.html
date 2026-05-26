@@ -5198,9 +5198,10 @@ function LessonScreen({ s, set, L, lang, lessonN, closeLesson }) {
   const formulas = LESSON_FORMULAS[c.n] || [];
   const theory = window.LESSON_THEORY?.[c.n];
   const assessment = window.LESSON_ASSESSMENTS?.[c.n];
+  const lessonCardPad = '18px 20px';
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 10, height: 770, overflow: 'hidden' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, height: 770, overflow: 'hidden' }}>
 
       {/* ── Header ── */}
       <div className="card" style={{
@@ -5246,19 +5247,19 @@ function LessonScreen({ s, set, L, lang, lessonN, closeLesson }) {
       </div>
 
       {/* ── Body: flex:1 로 헤더 이후 남은 높이 전부 확보 ── */}
-      <div style={{ flex: 1, minHeight: 0, display: 'flex', gap: 10, overflow: 'hidden' }}>
+      <div style={{ flex: 1, minHeight: 0, display: 'grid', gridTemplateColumns: 'minmax(0, 1.55fr) minmax(330px, 0.9fr)', gap: 12, overflow: 'hidden' }}>
 
-        {/* LEFT: scrollable single column — objectives, theory, procedure, assessments */}
-        <div style={{ flex: '1.1 1 0', minHeight: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 10, paddingRight: 4 }}>
+        {/* LEFT: scrollable article-style lesson document */}
+        <div style={{ minHeight: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 12, paddingRight: 8 }}>
 
           {/* Objectives — BLUE */}
           <div style={{
             background: SEC.obj.bg, borderRadius: 12,
-            border: `1px solid ${SEC.obj.border}`, padding: '14px 16px',
+            border: `1px solid ${SEC.obj.border}`, padding: lessonCardPad,
             flexShrink: 0,
           }}>
             <SectionHeader sec={SEC.obj} />
-            <ol style={{ margin: 0, padding: '0 0 0 20px', fontSize: 12.5, color: '#1a2d5a', lineHeight: 1.6 }}>
+            <ol style={{ margin: 0, padding: '0 0 0 22px', fontSize: 13.5, color: '#1a2d5a', lineHeight: 1.72 }}>
               {c.obj[lang].map((o, i) => (
                 <li key={i} style={{ marginBottom: 5, fontWeight: i === 0 ? 600 : 400 }}>{o}</li>
               ))}
@@ -5268,11 +5269,11 @@ function LessonScreen({ s, set, L, lang, lessonN, closeLesson }) {
           {/* Principle + Formulas — PURPLE */}
           <div style={{
             background: SEC.prin.bg, borderRadius: 12,
-            border: `1px solid ${SEC.prin.border}`, padding: '14px 16px',
+            border: `1px solid ${SEC.prin.border}`, padding: lessonCardPad,
             flexShrink: 0,
           }}>
             <SectionHeader sec={SEC.prin} extra={comp?.spec} />
-            <p style={{ margin: 0, fontSize: 12.5, color: '#2e1e6e', lineHeight: 1.7 }}>
+            <p style={{ margin: 0, fontSize: 13.5, color: '#2e1e6e', lineHeight: 1.78 }}>
               {comp?.principle[lang]}
             </p>
             <FormulaBox formulas={formulas} lang={lang} />
@@ -5283,15 +5284,15 @@ function LessonScreen({ s, set, L, lang, lessonN, closeLesson }) {
           {/* Procedure — GREEN */}
           <div style={{
             background: SEC.proc.bg, borderRadius: 12,
-            border: `1px solid ${SEC.proc.border}`, padding: '14px 16px',
+            border: `1px solid ${SEC.proc.border}`, padding: lessonCardPad,
             flexShrink: 0,
           }}>
             <SectionHeader sec={SEC.proc} extra={`${c.proc[lang].length}단계`} />
-            <ol style={{ margin: 0, padding: '0 0 0 0', listStyle: 'none', fontSize: 12.5, color: '#143d28', lineHeight: 1.65 }}>
+            <ol style={{ margin: 0, padding: '0 0 0 0', listStyle: 'none', fontSize: 13.25, color: '#143d28', lineHeight: 1.72 }}>
               {c.proc[lang].map((p, i) => (
-                <li key={i} style={{ display: 'flex', gap: 10, marginBottom: 8 }}>
+                <li key={i} style={{ display: 'flex', gap: 12, marginBottom: 10 }}>
                   <span style={{
-                    minWidth: 22, height: 22, borderRadius: 999,
+                    minWidth: 24, height: 24, borderRadius: 999,
                     background: SEC.proc.main, color: '#fff',
                     fontFamily: 'JetBrains Mono', fontSize: 11, fontWeight: 700,
                     display: 'grid', placeItems: 'center', flexShrink: 0, marginTop: 1,
@@ -5317,15 +5318,15 @@ function LessonScreen({ s, set, L, lang, lessonN, closeLesson }) {
           />
         </div>
 
-        {/* RIGHT: 입력조정 · 실시간 출력 · 관찰 차트 — 원래 레이아웃 유지 */}
-        <div style={{ flex: '1 1 0', minHeight: 0, display: 'grid', gridTemplateRows: 'auto auto minmax(0, 1fr)', gap: 10 }}>
+        {/* RIGHT: compact control/observation rail */}
+        <div style={{ minHeight: 0, display: 'grid', gridTemplateRows: 'auto auto minmax(0, 1fr)', gap: 10 }}>
 
           {/* Inputs — GRAY */}
           <div style={{
             background: SEC.input.bg, borderRadius: 12,
             border: `1px solid ${SEC.input.border}`, padding: '14px 16px',
           }}>
-            <SectionHeader sec={SEC.input} extra={lang === 'ko' ? '값 변경 → 출력 즉시 반응' : 'change → output reacts live'} />
+            <SectionHeader sec={SEC.input} extra={lang === 'ko' ? '보조 실습 패널' : 'practice controls'} />
             <InputPanel s={s} set={set} keys={c.inputs} lang={lang} L={L} />
           </div>
 
@@ -5335,7 +5336,7 @@ function LessonScreen({ s, set, L, lang, lessonN, closeLesson }) {
             border: `1px solid ${SEC.obs.border}`, padding: '14px 16px',
           }}>
             <SectionHeader sec={{ ...SEC.obs, label: { ko: '현재 출력값', en: 'Live Outputs' } }}
-                           extra={lang === 'ko' ? '실시간' : 'real-time'} />
+                           extra={lang === 'ko' ? '관찰용 요약' : 'observation summary'} />
             <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(c.outputs.length, 3)}, minmax(0, 1fr))`, gap: 8 }}>
               {c.outputs.map(k => {
                 const meta = SIGNAL_META[k];
@@ -5350,7 +5351,7 @@ function LessonScreen({ s, set, L, lang, lessonN, closeLesson }) {
                                   letterSpacing: '.05em', textTransform: 'uppercase' }}>
                       {meta?.[lang] || k}
                     </div>
-                    <div style={{ fontFamily: 'JetBrains Mono', fontSize: 20, fontWeight: 700, marginTop: 4,
+                    <div style={{ fontFamily: 'JetBrains Mono', fontSize: 18, fontWeight: 700, marginTop: 4,
                                   color: meta?.color || 'var(--ink)' }}>
                       {val}
                       <span style={{ fontSize: 10.5, color: 'var(--ink-3)', fontFamily: 'Pretendard',
@@ -5573,7 +5574,7 @@ function ComponentDetailOverlay({ s, set, L, lang, compKey, onClose }) {
           <button className="btn ghost" onClick={onClose} style={{ width: 32, padding: 0, justifyContent: 'center' }}>✕</button>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, padding: 20, overflow: 'auto' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.25fr) minmax(300px, 0.85fr)', gap: 18, padding: 20, overflow: 'auto' }}>
 
           {/* Left — principle + formulas + objectives */}
           <div style={{ display: 'grid', gap: 12, alignContent: 'start' }}>
