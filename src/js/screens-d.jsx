@@ -725,68 +725,69 @@ function ComponentDetailOverlay({ s, set, L, lang, compKey, onClose }) {
           <button className="btn ghost" onClick={onClose} style={{ width: 32, padding: 0, justifyContent: 'center' }}>✕</button>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.25fr) minmax(300px, 0.85fr)', gap: 18, padding: 20, overflow: 'auto' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 16, padding: 20, overflow: 'auto' }}>
 
-          {/* Left — principle + formulas + objectives */}
-          <div style={{ display: 'grid', gap: 12, alignContent: 'start' }}>
+          <div style={{ display: 'grid', gap: 16, alignContent: 'start' }}>
             <div style={{
               background: SEC.prin.bg, borderRadius: 12,
-              border: `1px solid ${SEC.prin.border}`, padding: '14px 16px',
+              border: `1px solid ${SEC.prin.border}`, padding: '18px 20px',
             }}>
               <SectionHeader sec={SEC.prin} />
-              <p style={{ margin: 0, fontSize: 12.5, color: '#2e1e6e', lineHeight: 1.7 }}>
+              <p style={{ margin: 0, fontSize: 14, color: '#2e1e6e', lineHeight: 1.84 }}>
                 {comp.principle[lang]}
               </p>
               <FormulaBox formulas={formulas} lang={lang} />
             </div>
 
-            <DeepTheoryBox theory={theory} lang={lang} compact={true} />
+            <DeepTheoryBox theory={theory} lang={lang} />
 
             <AssessmentBox
               sec={SEC.check}
               items={assessment?.check?.[lang] || assessment?.check?.ko || []}
               lang={lang}
-              compact={true}
             />
 
             {lesson && (
               <div style={{
                 background: SEC.obj.bg, borderRadius: 12,
-                border: `1px solid ${SEC.obj.border}`, padding: '14px 16px',
+                border: `1px solid ${SEC.obj.border}`, padding: '18px 20px',
               }}>
                 <SectionHeader sec={{ ...SEC.obj, label: { ko: '학습 포인트', en: 'Key Learning Points' } }} />
-                <ul style={{ margin: 0, padding: '0 0 0 18px', fontSize: 12, color: '#1a2d5a', lineHeight: 1.55 }}>
+                <ul style={{ margin: 0, padding: '0 0 0 20px', fontSize: 13.5, color: '#1a2d5a', lineHeight: 1.76 }}>
                   {lesson.obj[lang].map((o, i) => <li key={i} style={{ marginBottom: 4 }}>{o}</li>)}
                 </ul>
               </div>
             )}
-          </div>
 
-          {/* Right — live I/O */}
-          <div style={{ display: 'grid', gap: 12, alignContent: 'start' }}>
+            <AssessmentBox
+              sec={SEC.eval}
+              items={assessment?.eval?.[lang] || assessment?.eval?.ko || []}
+              lang={lang}
+            />
+
             <div style={{
               background: SEC.input.bg, borderRadius: 12,
-              border: `1px solid ${SEC.input.border}`, padding: '14px 16px',
+              border: `1px solid ${SEC.input.border}`, padding: '16px 18px',
             }}>
-              <SectionHeader sec={SEC.input} />
+              <SectionHeader sec={SEC.input} extra={lang === 'ko' ? '현장 조작 패널' : 'live control panel'} />
               <InputPanel s={s} set={set} keys={inputs} lang={lang} L={L} />
             </div>
 
             <div style={{
               background: SEC.obs.bg, borderRadius: 12,
-              border: `1px solid ${SEC.obs.border}`, padding: '14px 16px',
+              border: `1px solid ${SEC.obs.border}`, padding: '16px 18px',
             }}>
               <SectionHeader sec={{ ...SEC.obs, label: { ko: '출력 (실시간)', en: 'Outputs (live)' } }} />
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 10 }}>
                 {outputs.map(k => {
                   const meta = SIGNAL_META[k];
                   return (
                     <div key={k} style={{
-                      background: '#fff', borderRadius: 10, padding: '10px 12px',
+                      background: '#fff', borderRadius: 10, padding: '12px 14px',
                       border: `1px solid ${meta?.color || '#ccc'}30`,
                     }}>
-                      <div style={{ fontSize: 10, color: 'var(--ink-3)', fontWeight: 600 }}>{meta?.[lang] || k}</div>
-                      <div style={{ fontFamily: 'JetBrains Mono', fontWeight: 700, fontSize: 18, color: meta?.color, marginTop: 3 }}>
+                      <div style={{ fontSize: 10.5, color: 'var(--ink-3)', fontWeight: 700 }}>{meta?.[lang] || k}</div>
+                      <div style={{ fontFamily: 'JetBrains Mono', fontWeight: 700, fontSize: 19, color: meta?.color, marginTop: 4 }}>
                         {meta?.fmt(s[k] ?? 0)}
                         <span style={{ fontSize: 10, color: 'var(--ink-3)', fontFamily: 'Pretendard', marginLeft: 3 }}>{meta?.unit}</span>
                       </div>
@@ -799,7 +800,7 @@ function ComponentDetailOverlay({ s, set, L, lang, compKey, onClose }) {
 
             {lesson && (
               <button className="btn primary lg"
-                      style={{ width: '100%', justifyContent: 'center' }}
+                      style={{ width: '100%', justifyContent: 'center', marginTop: 2 }}
                       onClick={() => { onClose(); window.__openLesson?.(lesson.n); }}>
                 {lang === 'ko'
                   ? `차수 ${String(lesson.n).padStart(2, '0')} 전체 수업 열기  →`
