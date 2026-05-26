@@ -5246,82 +5246,10 @@ function LessonScreen({ s, set, L, lang, lessonN, closeLesson }) {
         </div>
       </div>
 
-      {/* ── Body: flex:1 로 헤더 이후 남은 높이 전부 확보 ── */}
-      <div style={{ flex: 1, minHeight: 0, display: 'grid', gridTemplateColumns: 'minmax(0, 1.55fr) minmax(330px, 0.9fr)', gap: 12, overflow: 'hidden' }}>
+      {/* ── Body: single scroll document with full-width theory sections ── */}
+      <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', paddingRight: 4 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 12, alignContent: 'start' }}>
 
-        {/* LEFT: scrollable article-style lesson document */}
-        <div style={{ minHeight: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 12, paddingRight: 8 }}>
-
-          {/* Objectives — BLUE */}
-          <div style={{
-            background: SEC.obj.bg, borderRadius: 12,
-            border: `1px solid ${SEC.obj.border}`, padding: lessonCardPad,
-            flexShrink: 0,
-          }}>
-            <SectionHeader sec={SEC.obj} />
-            <ol style={{ margin: 0, padding: '0 0 0 22px', fontSize: 13.5, color: '#1a2d5a', lineHeight: 1.72 }}>
-              {c.obj[lang].map((o, i) => (
-                <li key={i} style={{ marginBottom: 5, fontWeight: i === 0 ? 600 : 400 }}>{o}</li>
-              ))}
-            </ol>
-          </div>
-
-          {/* Principle + Formulas — PURPLE */}
-          <div style={{
-            background: SEC.prin.bg, borderRadius: 12,
-            border: `1px solid ${SEC.prin.border}`, padding: lessonCardPad,
-            flexShrink: 0,
-          }}>
-            <SectionHeader sec={SEC.prin} extra={comp?.spec} />
-            <p style={{ margin: 0, fontSize: 13.5, color: '#2e1e6e', lineHeight: 1.78 }}>
-              {comp?.principle[lang]}
-            </p>
-            <FormulaBox formulas={formulas} lang={lang} />
-          </div>
-
-          <DeepTheoryBox theory={theory} lang={lang} />
-
-          {/* Procedure — GREEN */}
-          <div style={{
-            background: SEC.proc.bg, borderRadius: 12,
-            border: `1px solid ${SEC.proc.border}`, padding: lessonCardPad,
-            flexShrink: 0,
-          }}>
-            <SectionHeader sec={SEC.proc} extra={`${c.proc[lang].length}단계`} />
-            <ol style={{ margin: 0, padding: '0 0 0 0', listStyle: 'none', fontSize: 13.25, color: '#143d28', lineHeight: 1.72 }}>
-              {c.proc[lang].map((p, i) => (
-                <li key={i} style={{ display: 'flex', gap: 12, marginBottom: 10 }}>
-                  <span style={{
-                    minWidth: 24, height: 24, borderRadius: 999,
-                    background: SEC.proc.main, color: '#fff',
-                    fontFamily: 'JetBrains Mono', fontSize: 11, fontWeight: 700,
-                    display: 'grid', placeItems: 'center', flexShrink: 0, marginTop: 1,
-                  }}>{i + 1}</span>
-                  <span>{p}</span>
-                </li>
-              ))}
-            </ol>
-          </div>
-
-          <AssessmentBox
-            sec={SEC.check}
-            items={assessment?.check?.[lang] || assessment?.check?.ko || []}
-            lang={lang}
-            extra={lang === 'ko' ? '서술형 권장' : 'descriptive'}
-          />
-
-          <AssessmentBox
-            sec={SEC.eval}
-            items={assessment?.eval?.[lang] || assessment?.eval?.ko || []}
-            lang={lang}
-            extra={lang === 'ko' ? '실습 보고서 기준' : 'lab report basis'}
-          />
-        </div>
-
-        {/* RIGHT: compact control/observation rail */}
-        <div style={{ minHeight: 0, display: 'grid', gridTemplateRows: 'auto auto minmax(0, 1fr)', gap: 10 }}>
-
-          {/* Inputs — GRAY */}
           <div style={{
             background: SEC.input.bg, borderRadius: 12,
             border: `1px solid ${SEC.input.border}`, padding: '14px 16px',
@@ -5330,7 +5258,6 @@ function LessonScreen({ s, set, L, lang, lessonN, closeLesson }) {
             <InputPanel s={s} set={set} keys={c.inputs} lang={lang} L={L} />
           </div>
 
-          {/* Live Outputs — ORANGE */}
           <div style={{
             background: SEC.obs.bg, borderRadius: 12,
             border: `1px solid ${SEC.obs.border}`, padding: '14px 16px',
@@ -5363,14 +5290,82 @@ function LessonScreen({ s, set, L, lang, lessonN, closeLesson }) {
             </div>
           </div>
 
-          {/* Observation chart — ORANGE, minHeight:0 으로 1fr 내에서 클리핑 */}
           <div style={{
+            gridColumn: '1 / -1',
             background: SEC.obs.bg, borderRadius: 12,
             border: `1px solid ${SEC.obs.border}`, padding: '14px 16px',
-            display: 'grid', gridTemplateRows: 'auto 1fr', minHeight: 0,
+            display: 'grid', gridTemplateRows: 'auto 220px',
           }}>
             <SectionHeader sec={SEC.obs} extra="−60s · live" />
             <ObservationChart s={s} outputs={c.outputs} lang={lang} />
+          </div>
+
+          <div style={{
+            gridColumn: '1 / -1',
+            background: SEC.obj.bg, borderRadius: 12,
+            border: `1px solid ${SEC.obj.border}`, padding: lessonCardPad,
+          }}>
+            <SectionHeader sec={SEC.obj} />
+            <ol style={{ margin: 0, padding: '0 0 0 24px', fontSize: 14, color: '#1a2d5a', lineHeight: 1.78 }}>
+              {c.obj[lang].map((o, i) => (
+                <li key={i} style={{ marginBottom: 7, fontWeight: i === 0 ? 600 : 400 }}>{o}</li>
+              ))}
+            </ol>
+          </div>
+
+          <div style={{
+            gridColumn: '1 / -1',
+            background: SEC.prin.bg, borderRadius: 12,
+            border: `1px solid ${SEC.prin.border}`, padding: lessonCardPad,
+          }}>
+            <SectionHeader sec={SEC.prin} extra={comp?.spec} />
+            <p style={{ margin: 0, fontSize: 14, color: '#2e1e6e', lineHeight: 1.84 }}>
+              {comp?.principle[lang]}
+            </p>
+            <FormulaBox formulas={formulas} lang={lang} />
+          </div>
+
+          <div style={{ gridColumn: '1 / -1' }}>
+            <DeepTheoryBox theory={theory} lang={lang} />
+          </div>
+
+          <div style={{
+            gridColumn: '1 / -1',
+            background: SEC.proc.bg, borderRadius: 12,
+            border: `1px solid ${SEC.proc.border}`, padding: lessonCardPad,
+          }}>
+            <SectionHeader sec={SEC.proc} extra={`${c.proc[lang].length}단계`} />
+            <ol style={{ margin: 0, padding: '0 0 0 0', listStyle: 'none', fontSize: 13.75, color: '#143d28', lineHeight: 1.76 }}>
+              {c.proc[lang].map((p, i) => (
+                <li key={i} style={{ display: 'flex', gap: 12, marginBottom: 12 }}>
+                  <span style={{
+                    minWidth: 26, height: 26, borderRadius: 999,
+                    background: SEC.proc.main, color: '#fff',
+                    fontFamily: 'JetBrains Mono', fontSize: 11, fontWeight: 700,
+                    display: 'grid', placeItems: 'center', flexShrink: 0, marginTop: 1,
+                  }}>{i + 1}</span>
+                  <span>{p}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <div style={{ gridColumn: '1 / -1' }}>
+            <AssessmentBox
+              sec={SEC.check}
+              items={assessment?.check?.[lang] || assessment?.check?.ko || []}
+              lang={lang}
+              extra={lang === 'ko' ? '서술형 권장' : 'descriptive'}
+            />
+          </div>
+
+          <div style={{ gridColumn: '1 / -1' }}>
+            <AssessmentBox
+              sec={SEC.eval}
+              items={assessment?.eval?.[lang] || assessment?.eval?.ko || []}
+              lang={lang}
+              extra={lang === 'ko' ? '실습 보고서 기준' : 'lab report basis'}
+            />
           </div>
         </div>
       </div>
