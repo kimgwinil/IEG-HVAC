@@ -31,9 +31,12 @@ const INPUT_META = {
 const SEC = {
   obj:   { main: '#2A6FDB', bg: '#EDF3FF', border: '#C3D8FC', label: { ko: '학습 목표', en: 'Learning Objectives' }, icon: '🎯' },
   prin:  { main: '#6B5BD2', bg: '#F1EEFF', border: '#D4CCFA', label: { ko: '동작 원리', en: 'Operating Principle' }, icon: '⚙️' },
+  deep:  { main: '#7C3AED', bg: '#F6F1FF', border: '#DDD0FF', label: { ko: '이론 심화', en: 'Deep Theory' }, icon: '📘' },
   proc:  { main: '#1F8A5B', bg: '#E8F8F0', border: '#B2E3CC', label: { ko: '실습 절차', en: 'Lab Procedure' }, icon: '🔬' },
   obs:   { main: '#D97757', bg: '#FFF3EC', border: '#FAD0B8', label: { ko: '실시간 관찰', en: 'Live Observation' }, icon: '📊' },
   input: { main: '#5B6577', bg: '#F4F6F9', border: '#D9DEE5', label: { ko: '입력 조정', en: 'Inputs' }, icon: '🎛️' },
+  check: { main: '#B45309', bg: '#FFF7ED', border: '#F3D3A1', label: { ko: '이론 확인 문제', en: 'Theory Check' }, icon: '📝' },
+  eval:  { main: '#BE185D', bg: '#FFF1F6', border: '#F7C7DA', label: { ko: '평가 문항', en: 'Assessment Tasks' }, icon: '✅' },
 };
 
 // ── category colors for the curriculum grid ──────────────────────────────
@@ -132,6 +135,60 @@ function FormulaBox({ formulas, lang }) {
           </div>
         </div>
       ))}
+    </div>
+  );
+}
+
+function DeepTheoryBox({ theory, lang, compact = false }) {
+  if (!theory) return null;
+  const content = theory[lang] || theory.ko || theory.en;
+  if (!content) return null;
+  const bullets = compact ? (content.bullets || []).slice(0, 3) : (content.bullets || []);
+
+  return (
+    <div style={{
+      background: SEC.deep.bg, borderRadius: 12,
+      border: `1px solid ${SEC.deep.border}`, padding: '14px 16px',
+      overflow: 'auto',
+    }}>
+      <SectionHeader sec={SEC.deep} />
+      {content.summary && (
+        <p style={{ margin: 0, fontSize: 12.5, color: '#3F266B', lineHeight: 1.72 }}>
+          {content.summary}
+        </p>
+      )}
+      {bullets.length > 0 && (
+        <ul style={{ margin: content.summary ? '10px 0 0 0' : 0, padding: '0 0 0 18px', fontSize: 12.5, color: '#3F266B', lineHeight: 1.7 }}>
+          {bullets.map((item, i) => (
+            <li key={i} style={{ marginBottom: 6 }}>{item}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+function AssessmentBox({ sec, items, lang, compact = false, extra }) {
+  if (!items || !items.length) return null;
+  const viewItems = compact ? items.slice(0, 2) : items;
+
+  return (
+    <div style={{
+      background: sec.bg, borderRadius: 12,
+      border: `1px solid ${sec.border}`, padding: '14px 16px',
+      overflow: 'auto',
+    }}>
+      <SectionHeader sec={sec} extra={extra} />
+      <ol style={{ margin: 0, padding: '0 0 0 20px', fontSize: 12.5, color: '#4A2435', lineHeight: 1.68 }}>
+        {viewItems.map((item, i) => (
+          <li key={i} style={{ marginBottom: 7 }}>{item}</li>
+        ))}
+      </ol>
+      {compact && items.length > viewItems.length && (
+        <div style={{ marginTop: 8, fontSize: 10.5, color: 'var(--ink-4)', fontFamily: 'JetBrains Mono' }}>
+          {lang === 'ko' ? `+ ${items.length - viewItems.length}개 추가 문항은 본 차수 화면에서 확인` : `+ ${items.length - viewItems.length} more items on the full lesson screen`}
+        </div>
+      )}
     </div>
   );
 }
@@ -279,6 +336,8 @@ function LessonScreen({ s, set, L, lang, lessonN, closeLesson }) {
   const comp = window.COMPONENTS[c.comp];
   const cat  = COMP_CAT[c.comp] || { color: '#8A93A4', bg: '#F4F6F9', label: { ko: '기타', en: 'Other' } };
   const formulas = LESSON_FORMULAS[c.n] || [];
+  const theory = window.LESSON_THEORY?.[c.n];
+  const assessment = window.LESSON_ASSESSMENTS?.[c.n];
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10, height: 770, overflow: 'hidden' }}>
@@ -329,7 +388,7 @@ function LessonScreen({ s, set, L, lang, lessonN, closeLesson }) {
       {/* ── Body: flex:1 로 헤더 이후 남은 높이 전부 확보 ── */}
       <div style={{ flex: 1, minHeight: 0, display: 'flex', gap: 10, overflow: 'hidden' }}>
 
-        {/* LEFT: 스크롤 가능한 단일 컬럼 — 학습목표 · 동작원리 · 실습절차 */}
+        {/* LEFT: scrollable single column — objectives, theory, procedure, assessments */}
         <div style={{ flex: '1.1 1 0', minHeight: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 10, paddingRight: 4 }}>
 
           {/* Objectives — BLUE */}
@@ -359,6 +418,8 @@ function LessonScreen({ s, set, L, lang, lessonN, closeLesson }) {
             <FormulaBox formulas={formulas} lang={lang} />
           </div>
 
+          <DeepTheoryBox theory={theory} lang={lang} />
+
           {/* Procedure — GREEN */}
           <div style={{
             background: SEC.proc.bg, borderRadius: 12,
@@ -380,6 +441,20 @@ function LessonScreen({ s, set, L, lang, lessonN, closeLesson }) {
               ))}
             </ol>
           </div>
+
+          <AssessmentBox
+            sec={SEC.check}
+            items={assessment?.check?.[lang] || assessment?.check?.ko || []}
+            lang={lang}
+            extra={lang === 'ko' ? '서술형 권장' : 'descriptive'}
+          />
+
+          <AssessmentBox
+            sec={SEC.eval}
+            items={assessment?.eval?.[lang] || assessment?.eval?.ko || []}
+            lang={lang}
+            extra={lang === 'ko' ? '실습 보고서 기준' : 'lab report basis'}
+          />
         </div>
 
         {/* RIGHT: 입력조정 · 실시간 출력 · 관찰 차트 — 원래 레이아웃 유지 */}
@@ -595,6 +670,8 @@ function ComponentDetailOverlay({ s, set, L, lang, compKey, onClose }) {
   const inputs  = lesson?.inputs  || ['mode', 'targetTemp', 'fanSpeed'];
   const outputs = lesson?.outputs || ['indoorTemp', 'powerKW'];
   const formulas = LESSON_FORMULAS[lesson?.n] || [];
+  const theory = lesson ? window.LESSON_THEORY?.[lesson.n] : null;
+  const assessment = lesson ? window.LESSON_ASSESSMENTS?.[lesson.n] : null;
 
   return (
     <div style={{
@@ -650,6 +727,15 @@ function ComponentDetailOverlay({ s, set, L, lang, compKey, onClose }) {
               </p>
               <FormulaBox formulas={formulas} lang={lang} />
             </div>
+
+            <DeepTheoryBox theory={theory} lang={lang} compact={true} />
+
+            <AssessmentBox
+              sec={SEC.check}
+              items={assessment?.check?.[lang] || assessment?.check?.ko || []}
+              lang={lang}
+              compact={true}
+            />
 
             {lesson && (
               <div style={{

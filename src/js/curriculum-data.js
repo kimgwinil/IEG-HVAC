@@ -927,3 +927,713 @@ window.CURRICULUM = [
     outputs: ['indoorTemp', 'co2', 'powerKW', 'eer'],
   },
 ];
+
+window.LESSON_THEORY = {
+  1: {
+    ko: {
+      summary: 'HVAC는 단순 냉방기가 아니라 열역학, 공기조화, 제어공학이 동시에 작동하는 통합 시스템이다. 실내 쾌적성은 온도만으로 결정되지 않고 상대습도, CO₂ 농도, 입자상 오염물질, 기류 분포, 체감온도까지 함께 봐야 한다.',
+      bullets: [
+        '냉동 사이클은 실내에서 흡수한 열과 압축기 입력 일을 더한 값을 실외로 방출한다. 따라서 실외 열방출량은 항상 실내 흡열량보다 크며, 이 에너지 수지를 이해해야 COP와 EER 해석이 가능하다.',
+        '실내 환경 제어는 현열 제어와 잠열 제어가 동시에 요구된다. 같은 실내온도라도 습도가 높으면 불쾌도가 증가하고, CO₂가 높으면 환기 부족으로 판단해야 하므로 단일 센서만으로는 품질을 평가할 수 없다.',
+        '본 장비는 압축기, EXV, 팬, 가습기, 공기청정기, 환기모듈을 하나의 폐루프 제어계로 묶는다. 한 액추에이터를 조정하면 다른 변수도 함께 흔들리므로, 항상 교차영향(coupling)을 고려해야 한다.',
+        '교육용 시뮬레이터에서는 센서 지연, 제어기 정착시간, 외기 교란을 관찰하는 것이 핵심이다. 목표값에 도달하는지보다 어떤 경로로 수렴하는지를 보는 것이 제어 시스템 이해에 더 중요하다.',
+      ],
+    },
+    en: {
+      summary: 'HVAC is a coupled thermo-fluid and control system, not just a cooling device. Comfort depends on temperature, humidity, CO₂, particulate level, airflow, and response dynamics together.',
+      bullets: [
+        'The outdoor coil rejects indoor heat plus compressor work, so heat balance is the basis for COP and EER interpretation.',
+        'Indoor-air quality requires simultaneous sensible, latent, and ventilation control rather than temperature-only control.',
+        'Compressor, EXV, fans, humidifier, purifier, and ventilation form one closed-loop system with cross-coupled behavior.',
+        'In training, the transient path, time delay, and settling behavior matter as much as the final steady-state value.',
+      ],
+    },
+  },
+  2: {
+    ko: {
+      summary: '압축-응축-팽창-증발의 4단계는 각각 압력, 온도, 엔탈피가 어떤 방향으로 이동하는지 이해해야 연결된다. P-h 선도는 이 변화를 한 장에 표현하는 가장 실용적인 도구다.',
+      bullets: [
+        '압축 과정은 저압 증기를 고압 증기로 만드는 일 입력 구간이다. 이상적으로는 등엔트로피 압축에 가깝지만 실제 장비에서는 기계손실과 모터손실로 토출 엔탈피가 더 높아진다.',
+        '응축 과정은 거의 일정한 고압에서 과열 제거, 응축, 과냉의 세 구간으로 나뉜다. 응축기 성능이 나쁘면 응축압력이 상승하고, 결국 압축기 동력이 급격히 증가한다.',
+        '팽창 과정은 EXV 전후 엔탈피가 거의 일정한 비가역 과정이다. 이때 압력은 급격히 떨어지고 일부 액체가 즉시 플래시 가스로 변해 증발기 입구 품질을 결정한다.',
+        '증발 과정은 저압에서 실내 공기 열을 흡수하는 구간이다. 여기서 과열도가 너무 낮으면 액압축 위험이 생기고, 너무 높으면 증발기 유효면적이 줄어 COP가 저하된다.',
+      ],
+    },
+    en: {
+      summary: 'The four refrigeration processes are best understood by tracking pressure, temperature, and enthalpy on a P-h chart.',
+      bullets: [
+        'Compression adds work and raises refrigerant pressure and discharge enthalpy above the ideal case.',
+        'Condensation includes de-superheating, phase change, and subcooling at nearly constant high pressure.',
+        'Expansion is nearly isenthalpic; pressure drops and flash gas appears immediately after the valve.',
+        'Evaporation absorbs indoor heat, but both too-low and too-high superheat reduce system safety or efficiency.',
+      ],
+    },
+  },
+  3: {
+    ko: {
+      summary: '인버터 스크롤 압축기는 냉동기의 심장이다. 토출량이 단순히 ON/OFF가 아니라 주파수에 따라 연속적으로 변하므로, 부분부하 효율과 제어 안정성에서 정속형과 큰 차이를 만든다.',
+      bullets: [
+        '스크롤 압축은 두 개의 나선형 스크롤 중 하나가 편심 운동하며 포켓 체적을 줄여 냉매를 압축한다. 왕복동 대비 맥동이 작고 밸브 손실이 적어 소음과 진동 면에서 유리하다.',
+        '인버터가 주파수를 높이면 냉매 질량유량이 증가하고 냉방능력도 커지지만, 동력은 거의 선형보다 빠르게 증가한다. 따라서 최대주파수 연속 운전이 항상 최적은 아니다.',
+        '압축비가 커질수록 토출온도가 상승하고 체적효율은 감소한다. 외기 고온이나 응축기 막힘 상황에서 압축기 보호로직이 필요한 이유가 여기에 있다.',
+        '부분부하에서는 정속형이 빈번한 ON/OFF로 과도손실을 만드는 반면, 인버터는 낮은 주파수에서 연속 운전해 제어 편차와 기동전류를 줄인다.',
+      ],
+    },
+    en: {
+      summary: 'The inverter scroll compressor enables continuous capacity modulation instead of simple cycling.',
+      bullets: [
+        'Scroll compression reduces pulsation and valve losses compared with reciprocating machines.',
+        'Higher frequency increases mass flow and capacity, but power rises rapidly and is not always optimal.',
+        'High compression ratio raises discharge temperature and lowers volumetric efficiency.',
+        'Variable-speed continuous operation cuts cycling loss and startup current at part load.',
+      ],
+    },
+  },
+  4: {
+    ko: {
+      summary: '공랭식 응축기의 역할은 고온 고압 냉매가 지닌 열을 외기로 안정적으로 버리는 것이다. 응축기 성능은 시스템 전체 효율의 상한을 사실상 결정한다.',
+      bullets: [
+        '응축 열전달은 냉매측 대류, 튜브 벽 전도, 핀 접촉저항, 공기측 대류가 직렬 열저항망을 이룬다. 실무에서는 대개 공기측 열저항이 가장 지배적이므로 핀 오염과 풍량 저하에 민감하다.',
+        '외기온도가 올라가면 포화 응축온도도 함께 올라가고 압축기 압축비가 증가한다. 그래서 여름철 고외기 조건에서 같은 냉방능력을 내기 위해 더 많은 전력이 필요하다.',
+        '응축기 출구 과냉도는 액냉매 안정 공급에 중요하다. 과냉도가 부족하면 EXV 입구에서 플래시 가스가 생겨 유량 제어가 불안정해진다.',
+        '핀 오염이나 팬 성능 저하는 응축 압력 상승, 토출온도 상승, 보호정지 빈도 증가로 이어진다. 교육에서는 외기 변화보다 응축기 오염 영향이 더 직접적으로 관찰되기도 한다.',
+      ],
+    },
+    en: {
+      summary: 'The air-cooled condenser governs how effectively the system rejects heat to ambient air.',
+      bullets: [
+        'Heat transfer is limited by a series network of refrigerant-side, wall, fin, and air-side resistances.',
+        'Higher ambient temperature forces higher condensing temperature and compressor ratio.',
+        'Outlet subcooling stabilizes liquid delivery to the EXV.',
+        'Fouling or low airflow quickly increases condensing pressure and protective shutdown risk.',
+      ],
+    },
+  },
+  5: {
+    ko: {
+      summary: 'EXV는 단순 감압 장치가 아니라 증발기 활용도를 결정하는 정밀 유량 제어기다. 실제 냉동제어에서는 과열도 목표 유지가 액압축 방지와 효율 확보의 핵심 기준이 된다.',
+      bullets: [
+        '팽창 직후 냉매는 일부가 즉시 기화한 2상 혼합상태가 되며, 이후 증발기에서 나머지 액이 증발한다. EXV 개도는 이 혼합비와 질량유량을 사실상 동시에 조정한다.',
+        '과열도가 낮다는 것은 증발기 출구가 포화점에 가깝다는 뜻이며, 너무 낮으면 미증발 액체가 압축기로 돌아갈 수 있다. 반대로 너무 높으면 증발기 말단이 과도하게 건식화된다.',
+        '전자식 밸브는 캐필러리보다 부하 추종성이 우수하다. 외기, 부하, 팬속도가 바뀌어도 스텝 제어로 즉시 유량을 수정할 수 있어 부분부하 효율이 좋다.',
+        'EXV는 센서 품질에 민감하다. 저압측 압력 계산 오차나 온도센서 편차가 커지면 실제 과열도와 계산 과열도가 달라져 제어 hunting이 발생한다.',
+      ],
+    },
+    en: {
+      summary: 'The EXV is a precision flow controller that protects the compressor and maximizes evaporator use.',
+      bullets: [
+        'It determines both refrigerant mass flow and quality after expansion.',
+        'Low superheat risks liquid return; high superheat wastes evaporator surface.',
+        'Electronic valves track load changes far better than fixed-orifice devices.',
+        'Accurate pressure and temperature sensing is essential to avoid hunting.',
+      ],
+    },
+  },
+  6: {
+    ko: {
+      summary: '증발기는 실내 공기에서 열과 수분을 동시에 제거하는 장치다. 따라서 온도 제어와 제습 성능은 서로 연결되어 있으며, 팬 속도 변화가 그 균형을 크게 바꾼다.',
+      bullets: [
+        '코일 표면온도가 공기 이슬점보다 낮아지면 수분이 응축되어 잠열이 제거된다. 이 때문에 냉방은 단순한 온도 하강이 아니라 공기 상태점 이동으로 해석해야 한다.',
+        '팬 풍량이 증가하면 공기측 열전달계수는 좋아지지만 체류시간이 짧아져 코일 표면과의 접촉 시간이 감소한다. 그 결과 현열비(SHF)가 커지고 제습량은 줄어드는 경향이 있다.',
+        '풍량이 지나치게 낮으면 증발온도가 더 떨어져 코일 동결 가능성이 높아진다. 얼음이 형성되면 공기 통로가 막혀 다시 풍량이 줄어드는 악순환이 생긴다.',
+        '실습에서는 실내 RH와 코일 관련 지표를 함께 봐야 한다. 온도만 보면 성능이 좋아 보이더라도 제습 실패나 동결 전조를 놓칠 수 있다.',
+      ],
+    },
+    en: {
+      summary: 'The evaporator handles both sensible cooling and latent moisture removal.',
+      bullets: [
+        'When coil surface temperature is below dew point, moisture condenses and latent heat is removed.',
+        'Higher airflow usually raises sensible fraction while reducing dehumidification effectiveness.',
+        'Too little airflow can drive the coil toward freeze-up.',
+        'Temperature alone is not enough; humidity behavior must be interpreted together.',
+      ],
+    },
+  },
+  7: {
+    ko: {
+      summary: 'R410A와 P-h 선도 학습의 목적은 운전 데이터를 열역학 상태량으로 해석하는 데 있다. 숫자를 단순 나열하는 것이 아니라 각 점이 사이클의 어떤 손실과 여유도를 뜻하는지 읽어야 한다.',
+      bullets: [
+        'R410A는 근사 공비 혼합냉매로 글라이드가 작아 일반적인 시스템 해석이 비교적 단순하다. 대신 작동압력이 높으므로 배관, 밸브, 압력센서의 설계여유가 더 중요하다.',
+        'P-h 선도에서 냉동효과는 h1-h4, 압축기 일은 h2-h1, 응축 방열은 h2-h3로 읽는다. 즉 선도의 가로 길이와 세로 높이가 바로 성능 해석으로 연결된다.',
+        '과냉도와 과열도는 단지 온도차가 아니라 시스템 안정성 지표다. 과냉이 충분하면 밸브 전단 액공급이 안정되고, 적정 과열은 압축기 보호 여유를 뜻한다.',
+        '실제 사이클은 압축 비등엔트로피, 배관 압력강하, 열교환기 손실 때문에 이상 사이클과 다르다. 선도 위 점들이 이상선에서 얼마나 벗어나는지가 손실의 실마리다.',
+      ],
+    },
+    en: {
+      summary: 'R410A study becomes meaningful when operating data are interpreted as thermodynamic state points on a P-h chart.',
+      bullets: [
+        'R410A runs at comparatively high pressure, so hardware margin and sensing quality matter.',
+        'Cooling effect, compressor work, and condenser heat rejection are read directly from enthalpy differences.',
+        'Subcooling and superheat are stability indicators, not just temperature gaps.',
+        'Deviation from the ideal cycle reveals real losses such as pressure drop and compression inefficiency.',
+      ],
+    },
+  },
+  8: {
+    ko: {
+      summary: '히트펌프는 밸브 하나로 냉동기의 역할을 바꾸는 장치가 아니라, 실내외 열교환기의 열원과 열방출 위치를 뒤집는 시스템이다. 냉매 유로 반전 시 과도현상이 반드시 발생한다.',
+      bullets: [
+        '4방향 밸브는 파일럿 압력과 솔레노이드 작동으로 메인 슬라이더를 이동시켜 흡입측과 토출측 연결을 바꾼다. 따라서 전환 직후에는 압력 재분배와 유량 재정렬이 필요하다.',
+        '난방 모드에서는 실외 코일이 저온 열원으로 작동하므로 외기 습도가 높고 코일 온도가 낮을 때 성에가 생성된다. 제상은 난방 효율보다 시스템 생존을 위한 필수 시퀀스다.',
+        '히트펌프 COP는 동일 전력으로 냉방보다 1만큼 유리하게 표현되지만, 저외기 조건에서는 증발원 확보가 어려워 실제 COP가 빠르게 하락한다.',
+        '냉방-난방 전환은 단순 모드 변경이 아니라 실내 체감에도 큰 영향을 준다. 전환 지연, 일시적 냉풍, 압축기 재기동 로직까지 함께 설계해야 한다.',
+      ],
+    },
+    en: {
+      summary: 'A heat pump reverses the thermal role of the indoor and outdoor coils, so transient behavior is unavoidable during switching.',
+      bullets: [
+        'The 4-way valve reassigns suction and discharge connections through pilot pressure and slider motion.',
+        'Outdoor-coil frosting in heat mode makes defrost control essential.',
+        'Heat-pump COP falls quickly when outdoor source temperature drops.',
+        'Mode change must consider comfort, pressure redistribution, and restart sequencing together.',
+      ],
+    },
+  },
+  9: {
+    ko: {
+      summary: 'PTC 히터는 저항 발열체이지만 일반 니크롬 히터와 달리 온도 상승에 따라 스스로 전류를 제한한다. 보조가열 장치로서 빠른 응답과 비교적 높은 안전성이 장점이다.',
+      bullets: [
+        'PTC 재료는 특정 큐리점 부근에서 저항이 급격히 증가한다. 초기에는 큰 전류가 흘러 빠르게 가열하고, 온도가 오르면 전류가 줄어 과열 위험이 완화된다.',
+        '히트펌프 난방은 외기 저하에 따라 용량이 감소하므로, 실내 부하가 크거나 제상 직후에는 보조히터가 체감 품질을 크게 좌우한다.',
+        '그러나 전기히터는 투입 전력 대부분이 곧바로 소비전력 증가로 나타난다. 열은 빠르지만 COP 관점에서는 히트펌프보다 불리하므로 제어 투입 조건을 엄격히 잡아야 한다.',
+        '실무에서는 토출공기 과열 방지, 팬 인터록, 히터 릴레이 접점 보호가 중요하다. 송풍 없이 히터만 투입되면 국부 과열이 생길 수 있다.',
+      ],
+    },
+    en: {
+      summary: 'PTC heaters provide rapid auxiliary heat with self-limiting current behavior.',
+      bullets: [
+        'Resistance rises sharply near the material transition point, reducing overheating risk.',
+        'Auxiliary heat is valuable when heat-pump capacity falls or during defrost recovery.',
+        'It improves response but penalizes overall efficiency because electric input rises directly.',
+        'Fan interlock and over-temperature protection remain critical.',
+      ],
+    },
+  },
+  10: {
+    ko: {
+      summary: '팬 법칙은 공조장치에서 가장 실무적인 경험 법칙 중 하나다. 풍량, 정압, 동력이 회전수 변화에 어떻게 비례하는지 이해하면 소음, 에너지, 제습 성능의 관계를 동시에 설명할 수 있다.',
+      bullets: [
+        '동일 임펠러와 유사한 유동 조건에서는 풍량은 회전수에 비례하고, 정압은 회전수의 제곱, 축동력은 회전수의 세제곱에 비례한다. 그래서 약간의 속도 증가도 전력에는 큰 차이를 만든다.',
+        '필터가 막히거나 덕트 저항이 증가하면 시스템 곡선이 위로 이동한다. 그 결과 동일 회전수에서도 실제 운전점 풍량이 감소하고 팬은 더 비효율적인 점에서 운전될 수 있다.',
+        '풍량 증가는 열교환기 성능을 개선할 수 있지만 소음, 드래프트, 제습 저하를 동반할 수 있다. 따라서 팬 제어는 단순히 많이 돌리는 문제가 아니다.',
+        '시뮬레이터에서는 각 단계별 응답을 통해 팬과 냉동사이클의 결합을 읽는 것이 중요하다. 팬을 올렸을 때 온도는 빨리 떨어져도 RH와 소비전력 해석은 다르게 나올 수 있다.',
+      ],
+    },
+    en: {
+      summary: 'Fan laws connect airflow, pressure, and power, making them central to HVAC operation tradeoffs.',
+      bullets: [
+        'Airflow scales with speed, pressure with speed squared, and power with speed cubed.',
+        'Filter loading shifts the system curve and lowers actual delivered airflow.',
+        'Higher airflow may improve temperature response while worsening noise or dehumidification.',
+        'Fan control must be interpreted together with coil and power behavior.',
+      ],
+    },
+  },
+  11: {
+    ko: {
+      summary: '초음파 가습은 액체 물을 가열하지 않고 미세 입자로 분산시켜 수분을 공급한다. 따라서 증기식과 에너지 특성이 다르고, 공기 분포와 물 관리가 성능의 핵심이 된다.',
+      bullets: [
+        '압전 진동자가 고주파로 진동하면 수면에 캐비테이션과 표면파가 형성되고, 임계 조건에서 미세 액적이 분리된다. 이 액적은 공기 중에서 빠르게 증발하며 RH를 상승시킨다.',
+        '가습량이 크더라도 공기 혼합이 나쁘면 국부 과가습과 결로가 생길 수 있다. 그래서 가습기 단독 성능보다 송풍 분포와 체류시간이 실제 결과를 좌우한다.',
+        '냉방 운전과 동시에 가습하면 증발기에서 다시 수분이 제거될 수 있어 제어 충돌이 발생한다. 이 경우 목적이 쾌적성인지 정밀 RH 유지인지에 따라 제어전략이 달라져야 한다.',
+        '수질 관리도 중요하다. 미네랄이 많은 물은 백분 발생과 진동자 오염을 유발해 장기 성능을 저하시킨다.',
+      ],
+    },
+    en: {
+      summary: 'Ultrasonic humidification adds moisture through atomized droplets rather than steam generation.',
+      bullets: [
+        'Piezo vibration creates fine droplets that evaporate into the room air.',
+        'Poor airflow distribution can cause local over-humidification and condensation.',
+        'Cooling and humidifying can fight each other unless control intent is clearly defined.',
+        'Water quality strongly affects long-term reliability and cleanliness.',
+      ],
+    },
+  },
+  12: {
+    ko: {
+      summary: '공기청정은 기류를 만들고 필터를 통과시켜 오염물질을 제거하는 과정이다. 필터 효율만 볼 것이 아니라 압력손실, 체류시간, CADR, 오염원 지속 유입까지 함께 평가해야 한다.',
+      bullets: [
+        'HEPA 필터의 포집은 체거름만으로 설명되지 않는다. 관성충돌, 차단, 확산 메커니즘이 입자 크기에 따라 달라지며, 0.3 μm 부근이 가장 어려운 입경(MPPS)에 해당한다.',
+        '활성탄은 기체 오염물질을 표면에 흡착한다. 포화가 진행되면 제거율이 떨어지므로 PM 필터와 달리 시간에 따른 성능 저하가 더 은밀하게 진행될 수 있다.',
+        '청정기의 실제 체감 성능은 CADR와 공간 체적의 비로 결정된다. 동일한 필터라도 풍량이 낮으면 제거 시상수가 길어져 사용자가 개선을 느끼기 어렵다.',
+        '필터 차압이 증가하면 팬 소비전력과 소음이 올라갈 수 있다. 따라서 유지관리 시점은 단순 시간 기준보다 누적 운전량과 차압 추적으로 잡는 것이 합리적이다.',
+      ],
+    },
+    en: {
+      summary: 'Air purification performance depends on filtration physics, pressure drop, and clean-air delivery rate together.',
+      bullets: [
+        'HEPA capture combines interception, impaction, and diffusion, with hardest capture near the MPPS region.',
+        'Activated carbon performance decays as adsorption sites are consumed.',
+        'CADR relative to room volume determines how fast occupants perceive improvement.',
+        'Rising filter pressure drop affects fan power, noise, and maintenance timing.',
+      ],
+    },
+  },
+  13: {
+    ko: {
+      summary: '온습도 센서는 제어계의 눈이다. 센서 오차가 누적되면 정밀한 제어기라도 잘못된 목표를 따라가게 되므로, 측정 원리와 오차 특성 이해가 제어공학만큼 중요하다.',
+      bullets: [
+        'NTC 서미스터는 온도 상승 시 저항이 감소하는 비선형 소자다. 단순 1점 보정보다 Steinhart-Hart 계수나 LUT를 이용한 다점 보정이 정확도를 높인다.',
+        '정전용량형 RH 센서는 폴리머막에 흡착된 수분량이 유전율을 바꾸는 원리를 이용한다. 온도 보상 없이 RH만 직접 해석하면 큰 오차가 생길 수 있다.',
+        '센서 응답시간은 제어 안정도에 직접 영향을 준다. 실제 값은 이미 변했는데 센서가 늦게 따라오면 제어기가 과도하게 보상해 오버슈트가 커질 수 있다.',
+        '설치 위치도 중요하다. 토출공기 근처, 직사광, 국부 난류 위치에 센서를 두면 공간 대표값이 아니라 편향된 국부값을 측정하게 된다.',
+      ],
+    },
+    en: {
+      summary: 'Temperature and RH sensors define what the controller believes the room state is.',
+      bullets: [
+        'NTC thermistors are nonlinear and benefit from multi-point calibration.',
+        'Capacitive RH sensing requires proper temperature compensation.',
+        'Sensor response lag can destabilize closed-loop control.',
+        'Installation position can bias readings away from true room-average conditions.',
+      ],
+    },
+  },
+  14: {
+    ko: {
+      summary: 'NDIR CO₂ 센서는 사람 점유와 환기 부족을 판단하는 대표적 공기질 센서다. 단순 수치보다 발생-희석-배출의 동적 균형을 이해해야 환기 제어에 올바르게 적용할 수 있다.',
+      bullets: [
+        'NDIR은 특정 파장의 적외선이 CO₂ 분자에 의해 선택적으로 흡수되는 원리를 이용한다. 광원 열화, 광로 오염, 온도 변화는 모두 장기 드리프트 요인이 된다.',
+        '실내 CO₂는 발생원(사람 호흡)과 제거원(환기)의 균형으로 결정된다. 따라서 평형농도는 점유 인원수뿐 아니라 환기량, 체적, 혼합 정도에 의해 달라진다.',
+        '환기 ON 후 농도가 지수적으로 감소한다면 1차 완전혼합 모델로 환기 성능을 역산할 수 있다. 실제 공간에서 이 가정이 깨지는 경우는 데드존과 단락유동 때문이다.',
+        'ABC 자동영점 보정은 장기간 센서 기준점을 되돌리는 데 유용하지만, 24시간 내 항상 신선외기 수준까지 내려가지 않는 공간에서는 오히려 오보정 위험이 있다.',
+      ],
+    },
+    en: {
+      summary: 'NDIR CO₂ sensing is central to ventilation control because it reflects occupancy and dilution dynamics.',
+      bullets: [
+        'CO₂ is estimated from selective infrared absorption, so optical drift and contamination matter.',
+        'Indoor concentration depends on source generation, room volume, mixing, and ventilation removal.',
+        'Exponential decay after ventilation start can be used to estimate effective air exchange.',
+        'ABC baseline correction can fail in spaces that never reach near-outdoor CO₂ levels.',
+      ],
+    },
+  },
+  15: {
+    ko: {
+      summary: 'PLC 통합 제어는 개별 부품을 하나의 안전한 순차제어 시스템으로 묶는 작업이다. 제어기 설계에서는 성능보다 먼저 인터록과 예외 처리의 완전성이 확보되어야 한다.',
+      bullets: [
+        'PLC는 입력 스캔, 로직 실행, 출력 갱신을 반복하는 순환 구조로 동작한다. 따라서 빠른 이벤트는 스캔주기보다 짧으면 놓칠 수 있어 래치나 고속입력이 필요할 수 있다.',
+        '압축기, 팬, 히터, 밸브는 임의 순서로 켜면 안 된다. 기동 지연, 최소 정지시간, 압력 평형, 센서 이상시 fail-safe 동작을 모두 시퀀스에 포함해야 한다.',
+        'PID 제어는 비례, 적분, 미분의 조합이지만 HVAC에서는 노이즈와 지연이 커서 보통 PI 중심으로 설계한다. 미분항은 센서 노이즈 증폭 위험 때문에 제한적으로 쓴다.',
+        '통신은 제어계의 또 다른 취약점이다. Modbus 타임아웃, CRC 오류, 주소 충돌이 생기면 제어 값이 멈추거나 갱신되지 않을 수 있으므로 watchdog이 필요하다.',
+      ],
+    },
+    en: {
+      summary: 'PLC integration is about safe sequencing and reliable closed-loop control, not just making devices run.',
+      bullets: [
+        'The scan-execute-update cycle sets the timing limits of PLC behavior.',
+        'Interlocks, delays, and fail-safe states are as important as nominal logic.',
+        'HVAC loops usually favor PI over aggressive derivative action because of lag and noise.',
+        'Field communication faults require watchdog and timeout handling.',
+      ],
+    },
+  },
+  16: {
+    ko: {
+      summary: 'AI 자동 제어는 전통 제어를 대체한다기보다 상위 최적화 계층으로 이해하는 것이 정확하다. 즉각적인 안정화는 기존 제어가 담당하고, AI는 더 긴 시간축에서 에너지와 쾌적성의 균형을 조정한다.',
+      bullets: [
+        'AI 입력은 단일 순간값보다 시계열 패턴이 중요하다. 외기 변화 추세, 점유 변동, 최근 제어 이력은 미래 부하를 예측하는 데 현재 온도 한 점보다 더 큰 정보를 준다.',
+        '보상 함수(reward)를 어떻게 설계하느냐에 따라 AI 성향이 달라진다. 에너지 절감을 지나치게 강조하면 쾌적성이 악화될 수 있고, 쾌적성만 강조하면 장비를 과도하게 운전할 수 있다.',
+        '강화학습이나 예측제어가 실제 설비에 적용될 때는 안전 경계와 제약조건이 필수다. 압축기 주파수 상한, 최소 풍량, 최대 RH 같은 하드 제약을 위반하면 안 된다.',
+        'AI 성능 평가는 평균 전력 하나로 끝나지 않는다. 목표온도 유지 오차, RH 편차, CO₂ 초과시간, 알람 발생빈도까지 함께 봐야 진짜로 우수한 제어인지 판단할 수 있다.',
+      ],
+    },
+    en: {
+      summary: 'AI control should be viewed as a supervisory optimization layer above conventional fast control loops.',
+      bullets: [
+        'Time-series context often matters more than a single instantaneous sensor value.',
+        'Reward design determines the balance between comfort and energy use.',
+        'Hard safety and operating constraints must bound any learned policy.',
+        'Evaluation should include comfort error, air-quality compliance, alarms, and energy together.',
+      ],
+    },
+  },
+};
+
+window.LESSON_ASSESSMENTS = {
+  1: {
+    check: {
+      ko: [
+        '냉동 사이클 4단계를 순서대로 쓰고, 각 단계에서 냉매의 압력과 상변화가 어떻게 달라지는지 설명하시오.',
+        '실내 쾌적성을 판단할 때 온도 외에 반드시 함께 봐야 하는 3가지 지표를 쓰고 이유를 설명하시오.',
+        '본 시스템에서 압축기 주파수, 팬 속도, 환기 제어가 서로 영향을 주는 이유를 제어 관점에서 설명하시오.',
+      ],
+      en: [
+        'Write the four refrigeration stages in order and explain how pressure and phase change across them.',
+        'List three comfort indicators other than temperature and explain why they matter.',
+        'Explain why compressor frequency, fan speed, and ventilation influence each other in this system.',
+      ],
+    },
+    eval: {
+      ko: [
+        '시스템 전원을 인가한 뒤 10분 동안 주요 센서값 변화를 기록하고, 정상 기동 여부를 판정하시오.',
+        'Auto, Cool, Heat 모드 전환 후 응답 차이를 비교하고 각 모드의 제어 목적을 서술하시오.',
+      ],
+      en: [
+        'Record major sensor trends for 10 minutes after startup and judge whether startup is normal.',
+        'Compare Auto, Cool, and Heat mode responses and state the control objective of each mode.',
+      ],
+    },
+  },
+  2: {
+    check: {
+      ko: [
+        'P-h 선도에서 1-2, 2-3, 3-4, 4-1 구간이 각각 무엇을 의미하는지 설명하시오.',
+        '이상 카르노 COP와 실제 HVAC COP가 차이 나는 주요 원인 3가지를 쓰시오.',
+        '과열도와 과냉도가 각각 시스템 안정성과 어떤 관계가 있는지 설명하시오.',
+      ],
+      en: [
+        'Explain what 1-2, 2-3, 3-4, and 4-1 represent on a P-h chart.',
+        'List three major reasons why actual HVAC COP differs from the Carnot limit.',
+        'Explain how superheat and subcooling relate to system stability.',
+      ],
+    },
+    eval: {
+      ko: [
+        '실험 데이터를 바탕으로 냉동 사이클 4개 상태점을 추정하고 COP 변화를 해석하시오.',
+        '외기 조건 변화가 응축 압력과 EER에 미치는 영향을 그래프로 정리하시오.',
+      ],
+      en: [
+        'Estimate the four cycle state points from measured data and interpret COP changes.',
+        'Summarize how ambient changes affect condensing pressure and EER with a graph.',
+      ],
+    },
+  },
+  3: {
+    check: {
+      ko: [
+        '스크롤 압축기와 왕복동 압축기의 구조적 차이와 장단점을 비교하시오.',
+        '인버터 주파수가 증가할 때 냉매 질량유량, 능력, 동력이 어떻게 변하는지 설명하시오.',
+        '압축비 상승이 토출온도와 체적효율에 미치는 영향을 설명하시오.',
+      ],
+      en: [
+        'Compare scroll and reciprocating compressors in structure, advantages, and drawbacks.',
+        'Explain how mass flow, capacity, and power change as inverter frequency increases.',
+        'Explain how rising compression ratio affects discharge temperature and volumetric efficiency.',
+      ],
+    },
+    eval: {
+      ko: [
+        '설정온도 편차를 단계적으로 바꾸며 압축기 주파수와 전력을 기록하고 제어 특성을 분석하시오.',
+        '정속 운전 가정과 인버터 운전 결과를 비교해 부분부하 효율 차이를 설명하시오.',
+      ],
+      en: [
+        'Vary setpoint error stepwise, record compressor frequency and power, and analyze control behavior.',
+        'Compare fixed-speed and inverter assumptions to explain part-load efficiency differences.',
+      ],
+    },
+  },
+  4: {
+    check: {
+      ko: [
+        '응축기 열저항망을 구성하는 요소를 쓰고, 실제로 가장 지배적인 저항이 무엇인지 설명하시오.',
+        '외기온도가 높아질수록 압축기 동력이 증가하는 이유를 설명하시오.',
+        '과냉도가 부족할 때 EXV 전단에서 발생할 수 있는 문제를 설명하시오.',
+      ],
+      en: [
+        'List the elements of the condenser thermal-resistance network and identify the dominant one in practice.',
+        'Explain why compressor power rises as ambient temperature increases.',
+        'Explain what can happen at the EXV inlet when subcooling is insufficient.',
+      ],
+    },
+    eval: {
+      ko: [
+        '응축기 오염 또는 풍량 저하를 가정한 조건에서 효율 저하 메커니즘을 단계별로 설명하시오.',
+        '외기 조건별 응축 성능 데이터를 정리하고 운영 개선안을 제시하시오.',
+      ],
+      en: [
+        'Explain the mechanism of efficiency loss under simulated fouling or reduced airflow.',
+        'Organize condenser-performance data by ambient condition and propose an operating improvement.',
+      ],
+    },
+  },
+  5: {
+    check: {
+      ko: [
+        'EXV가 캐필러리보다 부하 추종성이 우수한 이유를 설명하시오.',
+        '과열도가 너무 낮을 때와 너무 높을 때 각각 어떤 문제가 발생하는지 설명하시오.',
+        '센서 오차가 EXV hunting으로 이어지는 과정을 설명하시오.',
+      ],
+      en: [
+        'Explain why an EXV tracks load better than a capillary tube.',
+        'Explain the problems caused by too-low and too-high superheat.',
+        'Explain how sensor error can lead to EXV hunting.',
+      ],
+    },
+    eval: {
+      ko: [
+        '부하 변화에 따른 EXV 개도와 압축기 주파수의 동시 응답을 기록하고 안정시간을 평가하시오.',
+        '적정 과열도 유지가 압축기 보호와 COP 향상에 어떻게 기여하는지 실험 결과로 설명하시오.',
+      ],
+      en: [
+        'Record EXV opening and compressor-frequency response to load change and evaluate settling time.',
+        'Use the lab result to explain how proper superheat protects the compressor and improves COP.',
+      ],
+    },
+  },
+  6: {
+    check: {
+      ko: [
+        '현열 부하와 잠열 부하의 차이를 설명하고, 냉방에서 둘 다 중요한 이유를 쓰시오.',
+        '팬 풍량 증가가 제습 성능에 불리해질 수 있는 이유를 설명하시오.',
+        '코일 동결이 시작되면 어떤 악순환이 발생하는지 설명하시오.',
+      ],
+      en: [
+        'Explain the difference between sensible and latent load and why both matter in cooling.',
+        'Explain why increasing airflow can reduce dehumidification performance.',
+        'Explain the negative feedback loop that occurs once coil freeze-up begins.',
+      ],
+    },
+    eval: {
+      ko: [
+        '팬 단계별 온도와 RH 응답을 비교하여 최적 풍량 조건을 제시하시오.',
+        '동결 위험 구간을 추정하고 예방 운전 기준을 정리하시오.',
+      ],
+      en: [
+        'Compare temperature and RH response by fan step and propose an optimal airflow condition.',
+        'Estimate the freeze-risk region and summarize preventive operating criteria.',
+      ],
+    },
+  },
+  7: {
+    check: {
+      ko: [
+        'R410A의 특징과 R22 대비 높은 압력이 설계에 미치는 영향을 설명하시오.',
+        'P-h 선도에서 냉동효과, 압축기 일, 응축 방열량을 각각 어떤 엔탈피 차이로 계산하는지 쓰시오.',
+        '이상 사이클과 실제 사이클의 차이를 만드는 손실 요소를 3가지 이상 쓰시오.',
+      ],
+      en: [
+        'Explain key features of R410A and how its higher pressure affects design.',
+        'State which enthalpy differences represent cooling effect, compressor work, and condenser heat rejection.',
+        'List at least three loss factors that separate the real cycle from the ideal cycle.',
+      ],
+    },
+    eval: {
+      ko: [
+        '수집한 데이터를 P-h 선도 해석 관점으로 재정리하고 성능 저하 요인을 도출하시오.',
+        '과열도와 과냉도 측면에서 현재 운전 상태의 안정성을 평가하시오.',
+      ],
+      en: [
+        'Reorganize measured data on a P-h interpretation basis and identify performance-loss factors.',
+        'Evaluate operating stability from the perspective of superheat and subcooling.',
+      ],
+    },
+  },
+  8: {
+    check: {
+      ko: [
+        '4방향 밸브가 냉매 유로를 어떻게 바꾸는지 설명하시오.',
+        '히트펌프 난방 시 실외 코일에 성에가 생기는 이유를 설명하시오.',
+        '제상 운전이 필요한 이유와 제상 중 체감 품질 저하 원인을 설명하시오.',
+      ],
+      en: [
+        'Explain how the 4-way valve changes the refrigerant flow path.',
+        'Explain why frost forms on the outdoor coil during heat-pump heating.',
+        'Explain why defrost is necessary and why perceived comfort can drop during it.',
+      ],
+    },
+    eval: {
+      ko: [
+        '냉방-난방 전환 시 과도응답을 기록하고 압력 균등화 과정을 해석하시오.',
+        '저외기 조건에서 히트펌프 운전 한계와 보완 제어안을 제시하시오.',
+      ],
+      en: [
+        'Record transient response during cool-to-heat switching and interpret pressure equalization.',
+        'Propose compensating control strategies for low-ambient heat-pump limitations.',
+      ],
+    },
+  },
+  9: {
+    check: {
+      ko: [
+        'PTC 히터가 일반 저항히터와 다른 자기 제한 특성을 가지는 이유를 설명하시오.',
+        '보조 히터 투입이 난방 응답에는 유리하지만 효율에는 불리한 이유를 설명하시오.',
+        '히터 운전 시 팬 인터록이 필요한 이유를 설명하시오.',
+      ],
+      en: [
+        'Explain why a PTC heater has self-limiting behavior unlike a general resistance heater.',
+        'Explain why auxiliary heat improves response but hurts efficiency.',
+        'Explain why fan interlock is required during heater operation.',
+      ],
+    },
+    eval: {
+      ko: [
+        '히터 ON/OFF에 따른 실내온도 상승률과 소비전력 차이를 비교하시오.',
+        '보조가열 투입 기준을 외기조건과 부하 관점에서 정리하시오.',
+      ],
+      en: [
+        'Compare temperature rise rate and power draw with the heater ON and OFF.',
+        'Summarize auxiliary-heat engagement criteria from ambient and load perspectives.',
+      ],
+    },
+  },
+  10: {
+    check: {
+      ko: [
+        '팬 법칙에서 풍량, 정압, 동력이 회전수와 어떤 관계를 가지는지 쓰시오.',
+        '필터 막힘이 시스템 곡선과 실제 풍량에 미치는 영향을 설명하시오.',
+        '풍량 증가가 항상 좋은 제어가 아닌 이유를 설명하시오.',
+      ],
+      en: [
+        'State how airflow, static pressure, and power relate to fan speed under fan laws.',
+        'Explain how filter loading affects the system curve and actual airflow.',
+        'Explain why increasing airflow is not always the best control action.',
+      ],
+    },
+    eval: {
+      ko: [
+        '팬 단계별 소비전력과 출력 반응을 비교하여 최적 운전점을 제시하시오.',
+        '소음, 제습, 전력의 상충관계를 정리하고 운전 전략을 제안하시오.',
+      ],
+      en: [
+        'Compare power and output response by fan step and propose an optimal operating point.',
+        'Summarize the tradeoff among noise, dehumidification, and power, then propose a strategy.',
+      ],
+    },
+  },
+  11: {
+    check: {
+      ko: [
+        '초음파 가습기의 미세액적 생성 원리를 설명하시오.',
+        '가습량이 충분해도 국부 결로가 생길 수 있는 이유를 설명하시오.',
+        '냉방과 가습이 동시에 동작할 때 제어 충돌이 생기는 이유를 설명하시오.',
+      ],
+      en: [
+        'Explain how an ultrasonic humidifier creates fine droplets.',
+        'Explain why local condensation can occur even when total humidification is sufficient.',
+        'Explain why cooling and humidifying can conflict in control.',
+      ],
+    },
+    eval: {
+      ko: [
+        '목표 RH 변경에 따른 도달시간을 비교하고 가습 응답 특성을 평가하시오.',
+        '과가습 방지를 위한 상한값과 운전 조건을 제안하시오.',
+      ],
+      en: [
+        'Compare time-to-target after RH setpoint changes and evaluate humidification response.',
+        'Propose operating limits to prevent over-humidification.',
+      ],
+    },
+  },
+  12: {
+    check: {
+      ko: [
+        'HEPA 필터의 주요 포집 메커니즘 3가지를 설명하시오.',
+        '활성탄 필터 성능이 시간에 따라 저하되는 이유를 설명하시오.',
+        'CADR와 공간 체적의 비가 사용 체감 성능에 중요한 이유를 설명하시오.',
+      ],
+      en: [
+        'Explain three major capture mechanisms of a HEPA filter.',
+        'Explain why activated-carbon filter performance declines over time.',
+        'Explain why the CADR-to-room-volume ratio matters to perceived performance.',
+      ],
+    },
+    eval: {
+      ko: [
+        '공기청정 운전 후 오염물 농도 감쇠 특성을 해석하고 필터 상태를 평가하시오.',
+        '필터 유지관리 시점을 차압과 운전시간 기준으로 제안하시오.',
+      ],
+      en: [
+        'Interpret pollutant decay behavior after purifier operation and evaluate filter condition.',
+        'Propose a maintenance timing rule based on pressure drop and runtime.',
+      ],
+    },
+  },
+  13: {
+    check: {
+      ko: [
+        'NTC 서미스터의 비선형 특성과 다점 보정 필요성을 설명하시오.',
+        '정전용량형 RH 센서가 온도보상을 필요로 하는 이유를 설명하시오.',
+        '센서 설치 위치가 대표값 측정에 미치는 영향을 설명하시오.',
+      ],
+      en: [
+        'Explain NTC nonlinearity and why multi-point calibration is needed.',
+        'Explain why capacitive RH sensing requires temperature compensation.',
+        'Explain how sensor placement affects representative measurement.',
+      ],
+    },
+    eval: {
+      ko: [
+        '기준값 대비 센서 오차를 정리하고 보정안을 제시하시오.',
+        '응답시간 지연이 제어 오버슈트에 미치는 영향을 실험 결과와 연결해 설명하시오.',
+      ],
+      en: [
+        'Organize sensor error versus reference and propose a correction method.',
+        'Relate response lag to control overshoot using the experiment result.',
+      ],
+    },
+  },
+  14: {
+    check: {
+      ko: [
+        'NDIR 방식에서 CO₂ 농도를 산출하는 광학 원리를 설명하시오.',
+        '실내 CO₂ 평형농도가 점유 인원 외에 어떤 요소에 의해 달라지는지 쓰시오.',
+        'ABC 자동영점 보정이 잘못 동작할 수 있는 공간 조건을 설명하시오.',
+      ],
+      en: [
+        'Explain the optical principle used by NDIR to estimate CO₂ concentration.',
+        'List factors other than occupancy that affect indoor CO₂ equilibrium.',
+        'Explain under what space conditions ABC baseline correction can misbehave.',
+      ],
+    },
+    eval: {
+      ko: [
+        '환기 ON/OFF 조건의 CO₂ 감쇠·상승 데이터를 해석하고 유효 환기 성능을 평가하시오.',
+        '점유 추정과 실제 환기 필요량 사이의 관계를 설명하시오.',
+      ],
+      en: [
+        'Interpret CO₂ rise and decay data with ventilation OFF and ON and evaluate effective ventilation.',
+        'Explain the relationship between occupancy estimation and required ventilation rate.',
+      ],
+    },
+  },
+  15: {
+    check: {
+      ko: [
+        'PLC 스캔 주기가 제어 응답과 이벤트 처리에 미치는 영향을 설명하시오.',
+        'HVAC 시퀀스에서 반드시 필요한 인터록 3가지를 쓰시오.',
+        'HVAC에서 PI 제어가 PID 전체보다 자주 쓰이는 이유를 설명하시오.',
+      ],
+      en: [
+        'Explain how PLC scan time affects control response and event handling.',
+        'List three essential interlocks in HVAC sequencing.',
+        'Explain why PI control is often preferred over full PID in HVAC.',
+      ],
+    },
+    eval: {
+      ko: [
+        '모드 전환 시퀀스를 추적해 입력-로직-출력 경로를 설명하시오.',
+        'PID 또는 PI 파라미터 변경이 정착시간과 오버슈트에 미치는 영향을 비교하시오.',
+      ],
+      en: [
+        'Trace a mode-switch sequence and explain the input-logic-output path.',
+        'Compare how PID or PI tuning changes settling time and overshoot.',
+      ],
+    },
+  },
+  16: {
+    check: {
+      ko: [
+        'AI 제어에서 시계열 입력이 단일 순간값보다 중요한 이유를 설명하시오.',
+        '보상 함수 설계에 따라 제어 성향이 달라지는 이유를 설명하시오.',
+        'AI 제어에도 하드 제약조건이 반드시 필요한 이유를 설명하시오.',
+      ],
+      en: [
+        'Explain why time-series context is more informative than a single instant value in AI control.',
+        'Explain why controller behavior changes with reward-function design.',
+        'Explain why hard constraints are mandatory even in AI control.',
+      ],
+    },
+    eval: {
+      ko: [
+        '수동 운전과 AI 운전의 에너지·쾌적성·공기질 결과를 비교 평가하시오.',
+        'AI 제어 성능을 판단할 핵심 KPI 4개 이상을 선정하고 이유를 설명하시오.',
+      ],
+      en: [
+        'Compare manual and AI operation in terms of energy, comfort, and air quality.',
+        'Select at least four KPIs for judging AI-control performance and explain why they matter.',
+      ],
+    },
+  },
+};
